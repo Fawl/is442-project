@@ -1,4 +1,3 @@
-FROM mysql:5.7
+FROM postgres:16.1-bullseye
 
-COPY ./init.sql /docker-entrypoint-initdb.d
-COPY ./user.sql /docker-entrypoint-initdb.d
+COPY ./*.sql /docker-entrypoint-initdb.d

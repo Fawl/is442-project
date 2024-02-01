@@ -9,7 +9,8 @@ services:
     env_file: ./database/.env
     volumes:
       - database-data:/var/lib/mysql
-    expose: 3306
+    expose: 
+      - 5432
 
   backend:
     container_name: backend
@@ -19,7 +20,8 @@ services:
     env_file: ./backend/.env
     depends_on:
       - database
-    expose: 8888
+    expose: 
+      - 8888
 
   frontend:
     container_name: frontend
