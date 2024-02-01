@@ -6,9 +6,14 @@ services:
     build:
       context: ./database
       dockerfile: Dockerfile
-    env_file: ./database/.env
+    env_file: ./database/db.env
     volumes:
       - database-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     expose: 
       - 5432
 

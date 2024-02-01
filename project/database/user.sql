@@ -1,2 +1,0 @@
-CREATE USER 'is442project'@'%' IDENTIFIED BY 'aXvY5mpgNqSzUr4GELK9fT';
-GRANT ALL PRIVILEGES ON is442.* TO 'is442project'@'%';
