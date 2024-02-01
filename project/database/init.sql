@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS 'is442';
-USE 'is442';
+DROP DATABASE IF EXISTS 'is442';
+CREATE DATABASE 'is442';
 
 CREATE TYPE "UserType" AS ENUM (
   'customer',
@@ -19,6 +19,7 @@ CREATE TABLE "Event" (
   "title" varchar(255) NOT NULL,
   "venue" varchar(255) NOT NULL,
   "num_tickets" int NOT NULL,
+  "cancelled" bool NOT NULL,
   "start_time" datetime NOT NULL,
   "end_time" datetime NOT NULL
 );
