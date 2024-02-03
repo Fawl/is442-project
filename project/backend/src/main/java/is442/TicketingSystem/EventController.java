@@ -1,61 +1,63 @@
 package is442.TicketingSystem;
 
 import is442.TicketingSystem.models.Event;
-import is442.TicketingSystem.services.EventService;
+import is442.TicketingSystem.services.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
 @RequestMapping("/event")
-@Service
 public class EventController {
 
-	@Autowired
-	private EventService eventService;
+	private final EventRepository eventRepository;
+	public EventController(EventRepository eventRepository) {
+		this.eventRepository = eventRepository;
+	}
 
 	@GetMapping
 	public List<Event> findAll(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate before, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate after) {
-
-		if (Objects.nonNull(after)) {
-			// get after
+		if (Objects.isNull(after)) {
+			after = LocalDate.now();
 		}
 
-		if (Objects.nonNull(before)) {
-			// from above, get before
+		if (Objects.isNull(before)) {
+			before = after.plusMonths(6);
 		}
 
-		return eventService.findAll();
+		return eventRepository.findByStartTimeAfterAndEndTimeBefore(after, before);
+		// return eventRepository.findAll();
 	}
 
 
 	// create a Event
-	@ResponseStatus(HttpStatus.CREATED) // 201
 	@PostMapping
-	public Event create(@RequestBody Event Event) {
-		return eventService.save(Event);
+	public ResponseEntity<Event> create(@RequestBody Event Event) {
+		if (eventRepository.findById(Event.getId()).isPresent()) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Event with ID" + Event.getId() + "is already present\n" + Event.toString());
+		} else {
+			return new ResponseEntity<Event>(eventRepository.save(Event), HttpStatus.CREATED);
+		}
 	}
 
 	// update a Event
 	@PutMapping
 	public Event update(@RequestBody Event Event) {
-		return eventService.save(Event);
+		return eventRepository.save(Event);
 	}
-	
 
-	@GetMapping("/after/{date}")
+	@GetMapping("/{date}")
 	public List<Event> findByPublishedDateAfter(
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-		return eventService.findByOngoingEvents(date);
+		return eventRepository.findByOngoingEvents(date);
 	}
 
 }
