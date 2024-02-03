@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   database:
-    container_name: database
+    container_name: OOPdatabase
     build:
       context: ./database
       dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
       - 5432
 
   backend:
-    container_name: backend
+    container_name: OOPbackend
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -26,16 +26,16 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    expose: 
-      - 8888
+    ports: 
+      - 8080:8080
 
-  frontend:
-    container_name: frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    depends_on:
-      - backend
+  # frontend:
+  #   container_name: frontend
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - backend
 
 volumes:
   database-data:
