@@ -2,7 +2,6 @@ package is442.TicketingSystem;
 
 import is442.TicketingSystem.models.Event;
 import is442.TicketingSystem.services.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

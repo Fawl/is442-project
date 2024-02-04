@@ -7,12 +7,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /*
-SO WHAT DID I DISCOVER? JPA/PSQL IS VERY PARTICULAR WITH THE TABLE NAME. IT HAS TO HAVE A "" IF NOT IT DOESNT WORK.
+SO WHAT DID I DISCOVER? JPA/PSQL IS VERY PARTICULAR WITH THE TABLE NAME.
 AND IT AUTO LOWER CASES YOUR FUCKING TABLE NAME, UNLESS YOU ADD IN spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 IN THE application.properties
  */
 @Entity
-@Table(name = "\"Events\"")
+@Table(name = "ticketedevent")
 public class Event {
 	
 	@Id
