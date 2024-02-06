@@ -1,9 +1,11 @@
+import handler from "@/components/emails/sendApi";
 import Navbar from "@/components/navigation/navbar";
 import { buttonVariants } from "@/components/ui/button";
 import { DEFAULT_ROUTES } from "@/lib/routes";
 import Link from "next/link";
 
 export default function Home() {
+  
   return (
     <>
       <Navbar />
