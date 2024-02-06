@@ -11,7 +11,7 @@ export default function EventCard() {
       </div>
       <div className="space-y-1">
         <div className="text-sm text-[#0977aa] tracking-tight font-medium">
-          Sat, June 15, 7:30 PM
+          Sat, June 15, 10:00 AM
         </div>
         <h2 className="font-medium line-clamp-1">Generative AI Hackathon</h2>
         <p className="text-sm text-muted-foreground line-clamp-2">
