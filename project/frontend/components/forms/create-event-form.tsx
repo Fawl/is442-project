@@ -53,7 +53,12 @@ export default function CreateEventForm() {
                   {...field}
                   type="text"
                   placeholder="Enter event name"
-                  className="focus-visible:ring-1 focus-visible:ring-offset-0"
+                  className={cn(
+                    "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                    !field.value && "text-muted-foreground",
+                    form.formState.errors.eventName?.message &&
+                      "border-red-500 focus-visible:ring-red-500"
+                  )}
                 />
               </FormControl>
               <FormMessage className="font-normal" />
@@ -141,7 +146,12 @@ export default function CreateEventForm() {
                   {...field}
                   type="text"
                   placeholder="Venue"
-                  className="focus-visible:ring-1 focus-visible:ring-offset-0"
+                  className={cn(
+                    "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                    !field.value && "text-muted-foreground",
+                    form.formState.errors.venue?.message &&
+                      "border-red-500 focus-visible:ring-red-500"
+                  )}
                 />
               </FormControl>
               <FormMessage className="font-normal" />
@@ -160,7 +170,12 @@ export default function CreateEventForm() {
                   <Input
                     {...field}
                     type="number"
-                    className="focus-visible:ring-1 focus-visible:ring-offset-0"
+                    className={cn(
+                      "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                      !field.value && "text-muted-foreground",
+                      form.formState.errors.ticketPrice?.message &&
+                        "border-red-500 focus-visible:ring-red-500"
+                    )}
                   />
                 </FormControl>
                 <FormMessage className="font-normal" />
@@ -180,7 +195,12 @@ export default function CreateEventForm() {
                   <Input
                     {...field}
                     type="number"
-                    className="focus-visible:ring-1 focus-visible:ring-offset-0"
+                    className={cn(
+                      "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                      !field.value && "text-muted-foreground",
+                      form.formState.errors.totalTickets?.message &&
+                        "border-red-500 focus-visible:ring-red-500"
+                    )}
                   />
                 </FormControl>
                 <FormMessage className="font-normal" />

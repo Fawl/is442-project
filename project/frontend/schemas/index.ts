@@ -15,7 +15,9 @@ export const CreateEventSchema = z.object({
   eventName: z.string().min(1, {
     message: "Required",
   }),
-  venue: z.string(),
+  venue: z.string().min(1, {
+    message: "Required",
+  }),
   date: z.date(),
   startTime: z.string(),
   ticketPrice: z.coerce.number(),

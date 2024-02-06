@@ -9,13 +9,13 @@ export default function RegisterPage() {
       <div className="w-full max-w-md mx-auto space-y-6">
         <div className="text-center space-y-1">
           <h1 className="text-2xl font-semibold">Create an account</h1>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-muted-foreground text-balance">
             Just a few clicks and you're in - ready to explore a world of
             possibilities tailored for you.
           </div>
         </div>
         <RegisterForm />
-        <div className="text-sm text-center text-muted-foreground">
+        <div className="text-sm text-center text-muted-foreground text-balance">
           By continuing, you acknowledge that you have read and agree to our{" "}
           <span className="font-medium text-primary">Terms</span> and{" "}
           <span className="font-medium text-primary">Privacy Policy</span>.
