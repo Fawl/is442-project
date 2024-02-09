@@ -11,7 +11,7 @@ interface RequestBody {
 export async function POST(request: { json: () => Promise<RequestBody> }) {
   try {
     const { recipientEmail, subject } = await request.json();
-
+    
     if (!recipientEmail || !subject) {
       return NextResponse.json(
         { message: "Recipient email and subject are required" },
