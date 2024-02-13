@@ -88,7 +88,7 @@ export const InfiniteMovingCards = ({
       >
         {items.map((item, idx) => (
           <li
-            className="w-[350px] max-w-full relative rounded-2xl flex-shrink-0 px-8 py-6 md:w-[450px]"
+            className="w-[350px] max-w-full relative rounded-2xl flex-shrink-0 px-8 py-6 md:w-[450px] select-none"
             key={item.title}
           >
             <div
@@ -98,6 +98,7 @@ export const InfiniteMovingCards = ({
             <div className="space-y-3">
               <div className="relative aspect-[16:9] h-[200px] rounded-lg">
                 <Image
+                  draggable="false"
                   className="rounded-lg object-cover"
                   src={item.imageSrc}
                   alt={item.title}

@@ -26,7 +26,7 @@ export default function Home() {
     <>
       <Navbar />
       <main className="min-h-[calc(100dvh-56px)] max-w-[1440px] mx-auto flex items-center justify-center p-4">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col justify-center space-y-6">
             <h1 className="text-5xl font-semibold tracking-tight">
               Delightful events

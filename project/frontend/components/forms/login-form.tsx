@@ -1,10 +1,14 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { LoginFormSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 // COMPONENTS
+import { cn } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -14,9 +18,13 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 export default function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const form = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -25,9 +33,34 @@ export default function LoginForm() {
     },
   });
 
+  const handleOnSubmit = async (values: z.infer<typeof LoginFormSchema>) => {
+    try {
+      const response = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+      console.log(response);
+      if (response && response.ok) {
+        {
+          searchParams.get("callbackUrl")
+            ? router.replace(callbackUrl)
+            : router.replace("/");
+        }
+        router.refresh();
+      }
+
+      if (response && response.error) {
+        toast.error(response.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Form {...form}>
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={form.handleSubmit(handleOnSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -39,7 +72,12 @@ export default function LoginForm() {
                   {...field}
                   type="email"
                   placeholder="Email Address"
-                  className="focus-visible:ring-1 focus-visible:ring-offset-0"
+                  className={cn(
+                    "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                    !field.value && "text-muted-foreground",
+                    form.formState.errors.email?.message &&
+                      "border-red-500 focus-visible:ring-red-500"
+                  )}
                 />
               </FormControl>
               <FormMessage className="font-normal" />
@@ -58,7 +96,12 @@ export default function LoginForm() {
                   {...field}
                   type="password"
                   placeholder="Password"
-                  className="focus-visible:ring-1 focus-visible:ring-offset-0"
+                  className={cn(
+                    "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                    !field.value && "text-muted-foreground",
+                    form.formState.errors.password?.message &&
+                      "border-red-500 focus-visible:ring-red-500"
+                  )}
                 />
               </FormControl>
               <FormMessage className="font-normal" />
