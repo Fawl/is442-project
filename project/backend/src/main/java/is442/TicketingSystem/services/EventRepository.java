@@ -1,5 +1,5 @@
 package is442.TicketingSystem.services;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,12 +15,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	// Refer to https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
 	List<Event> findByTitle(String title);
 
-	List<Event> findByStartTimeAfterAndEndTimeBefore(LocalDate start, LocalDate end);
+	List<Event> findByStartTimeAfterAndEndTimeBeforeAndCancelledFalse(LocalDateTime start, LocalDateTime end);
 
 	// List<Event> findAllOrderByPrice();
 
+	List<Event> findByEndTimeBefore(LocalDateTime end);
+	
+	List<Event> findByEndTimeBeforeAndCancelledFalse(LocalDateTime end);
+
 	// Custom query
     // FUCKING SHIT
-	@Query(value = "SELECT * FROM \"Events\" e WHERE e.end_time <= :date", nativeQuery = true)
-    List<Event> findByOngoingEvents(@Param("date") LocalDate date);
+	@Query(value = "SELECT * FROM \"Events\" e WHERE e.end_time <= :date and e.cancelled = false ", nativeQuery = true)
+    List<Event> findByOngoingEvents(@Param("date") LocalDateTime date);
 }

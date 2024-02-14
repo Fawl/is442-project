@@ -1,8 +1,14 @@
 package is442.TicketingSystem.models;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -16,6 +22,7 @@ IN THE application.properties
 public class Event {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String title;
 	private String venue;
@@ -33,20 +40,25 @@ public class Event {
 	@Column(name = "num_tickets")
 	private int numTickets;
 	@Column(name = "start_time")
-	private LocalDate startTime;
+	private LocalDateTime startTime;
 	@Column(name = "end_time")
-	private LocalDate endTime;
+	private LocalDateTime endTime;
 	private boolean cancelled;
+	@Column(name = "image_link")
+	private String imageLink;
 	// private double price;
+
+	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+	private List<Ticket> tickets;
 
 	// Constructors, getters, and setters
 	public Long getId() {
 		return id;
 	}
-	public LocalDate getEnd() {
+	public LocalDateTime getEnd() {
 		return endTime;
 	}
-	public LocalDate getStart() {
+	public LocalDateTime getStart() {
 		return startTime;
 	}
 	public int getNumTickets() {
@@ -64,6 +76,12 @@ public class Event {
 	public boolean getCancelled() {
 		return cancelled;
 	}
+	public List<Ticket> getTickets() {
+		return this.tickets;
+	}
+	public String getImageLink() {
+		return imageLink;
+	}
 	
 	public void cancel() {
 		this.cancelled = true;
@@ -73,11 +91,11 @@ public class Event {
 		this.cancelled = false;
 	}
 
-	public void setEnd(LocalDate end) {
+	public void setEnd(LocalDateTime end) {
 		this.endTime = end;
 	}
 
-	public void setStart(LocalDate start) {
+	public void setStart(LocalDateTime start) {
 		this.startTime = start;
 	}
 
@@ -87,5 +105,9 @@ public class Event {
 
 	public void setVenue(String venue) {
 		this.venue = venue;
+	}
+
+	public void setImageLink(String imageLink) {
+		this.imageLink = imageLink;
 	}
 }
