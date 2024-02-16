@@ -22,6 +22,7 @@ CREATE TABLE "ticketedevent" (
   "id" serial PRIMARY KEY,
   "title" varchar(255) NOT NULL,
   "venue" varchar(255) NOT NULL,
+  "price" float NOT NULL,
   "num_tickets" int NOT NULL,
   "cancelled" bool NOT NULL,
   "start_time" timestamp NOT NULL,
