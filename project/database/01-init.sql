@@ -11,7 +11,8 @@ CREATE TABLE "tags" (
 );
 
 CREATE TABLE "user" (
-  "email" varchar(255) PRIMARY KEY,
+  "id" serial PRIMARY KEY,
+  "email" varchar(255) UNIQUE NOT NULL,
   "password_hash" char(32) NOT NULL,
   "user_type" usertype NOT NULL,
   "balance" float NOT NULL DEFAULT 1000
@@ -44,14 +45,14 @@ CREATE TABLE "ticket" (
 CREATE TABLE "purchase" (
   "ticket_id" integer PRIMARY KEY NOT NULL,
   "event_id" integer NOT NULL,
-  "user_email" varchar(255) NOT NULL
+  "user_id" integer NOT NULL
 );
 
 ALTER TABLE "ticket" ADD CONSTRAINT "ticket_event_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
 
 ALTER TABLE "ticket" ADD CONSTRAINT "ticket_ticketpurchase_fk" FOREIGN KEY ("id") REFERENCES "purchase" ("ticket_id");
 
-ALTER TABLE "purchase" ADD CONSTRAINT "user_ticketpurchase_fk" FOREIGN KEY ("user_email") REFERENCES "user" ("email");
+ALTER TABLE "purchase" ADD CONSTRAINT "user_ticketpurchase_fk" FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
 ALTER TABLE "eventtags" ADD CONSTRAINT "event_eventtags_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
 
