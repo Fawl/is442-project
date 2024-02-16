@@ -23,6 +23,7 @@ CREATE TABLE "ticketedevent" (
   "title" varchar(255) NOT NULL,
   "venue" varchar(255) NOT NULL,
   "price" float NOT NULL,
+  "cancellation_fee" float NOT NULL DEFAULT 0.0,
   "num_tickets" int NOT NULL,
   "cancelled" bool NOT NULL,
   "start_time" timestamp NOT NULL,
