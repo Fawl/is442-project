@@ -8,15 +8,19 @@ import {
   Column,
   Img,
 } from "@react-email/components";
-
+import QRCode from "react-qr-code";
 import * as React from "react";
+import { Hr } from "@react-email/components";
 
 export default function SampleEmail(props: any) {
+  
   const { url } = props;
+  const value="cysdyahd"
+  const name="Chi Yong"
   return (
     <Tailwind>
       <Html>
-        <div className="w-[400px] h-[600px] bg-[#fdf4f7] p-2 round-sm font-sans">
+        <div className="w-[400px] bg-[#fdf4f7] p-2 round-sm font-sans">
           <Img
             className="w-full rounded-lg"
             alt="banner"
@@ -61,14 +65,36 @@ export default function SampleEmail(props: any) {
               </div>
             </div>
           </Section>
-          <Section className="bg-white rounded-lg my-2 p-2">
-            <div className=" font-xl">Hi,[name] Here is your ticket</div>
-            <div className="my-2" >
-              <Img
-              className="mx-auto"
-                alt="barcode"
-                src="https://chart.googleapis.com/chart?cht=qr&chl=https%3A%2F%2Fl1nq.com%2FognyL&chs=180x180&choe=UTF-8&chld=L|2"
-              />
+          <Section className="bg-white rounded-lg my-2">
+            <div className="font-semibold border-b pt-2 px-2 flex ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-ticket text-green-800"
+              >
+                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+                <path d="M13 5v2" />
+                <path d="M13 17v2" />
+                <path d="M13 11v2" />
+              </svg>
+              <div className="my-auto ml-2">Ticket Information </div>
+            </div>
+            <Hr />
+            <div className="p-2">
+              <div className=" font-xl">Hi, {name} Here is your ticket</div>
+              <div className="my-2 flex justify-center">
+                <QRCode value={value} className="h-40 w-40 m-2" />
+                
+              </div>
+              <div className="text-center font-semibold">{value}</div>
+              
             </div>
           </Section>
         </div>

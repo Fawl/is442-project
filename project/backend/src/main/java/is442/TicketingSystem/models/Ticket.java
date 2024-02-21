@@ -28,7 +28,7 @@ public class Ticket {
     private boolean redeemed;
 
     @Column(name = "purchase_time")
-    private LocalDateTime puchaseTime;
+    private LocalDateTime purchaseTime;
 
     public Ticket(int id, Event event) {
         this.id = id;
