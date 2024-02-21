@@ -1,4 +1,4 @@
-package is442.TicketingSystem;
+package is442.TicketingSystem.controllers;
 
 import is442.TicketingSystem.models.Event;
 import is442.TicketingSystem.models.Ticket;
