@@ -6,7 +6,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import lombok.Data;
+import is442.TicketingSystem.types.usertype;
 
 
 @Data
@@ -19,10 +22,11 @@ public class User {
     @Column
     private String password_hash;
 
-    // @Enumerated(EnumType.STRING) // Use EnumType.STRING to store enum names as strings
+    @Enumerated(EnumType.STRING) // Use EnumType.STRING to store enum names as strings
     @Column
-    private String user_type;
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private usertype user_type;
 
     @Column
-    private float balance;
+    private float balance = 1000;
 }

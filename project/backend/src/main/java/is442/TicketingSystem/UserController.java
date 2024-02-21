@@ -1,7 +1,7 @@
 package is442.TicketingSystem;
 
 import is442.TicketingSystem.models.User;
-import is442.TicketingSystem.models.UserType;
+import is442.TicketingSystem.types.usertype;
 import is442.TicketingSystem.services.UserRepository;
 
 import org.springframework.data.repository.query.Param;
@@ -28,15 +28,14 @@ public class UserController {
         }
 
         @GetMapping("/find")
-        public List<User> findAll() {
+        public List<User> findSpecific() {
             return userRepository.findAll();
         }
-        
 
         @PostMapping("/new")
         public String createUser(@RequestBody User request) {
             try{
-                if (request.getUser_type() == "customer" || request.getUser_type() == "ticket_officer" || request.getUser_type() == "event_manager"){
+                if (request.getUser_type() == usertype.customer || request.getUser_type() == usertype.ticket_officer || request.getUser_type() == usertype.event_manager){
                     userRepository.save(request);
                     return "Success!";
                 }else{
@@ -50,7 +49,7 @@ public class UserController {
         @PutMapping("update")
         public String updateUser(@RequestBody User request){
             try{
-                if (request.getUser_type() == "customer" || request.getUser_type() == "ticket_officer" || request.getUser_type() == "event_manager"){
+                if (request.getUser_type() == usertype.customer || request.getUser_type() == usertype.ticket_officer || request.getUser_type() == usertype.event_manager){
                     userRepository.save(request);
                     return "Success!";
                 }else{
@@ -62,6 +61,10 @@ public class UserController {
         }
 
         @DeleteMapping
-        public String deleteUser(@RequestBody User)
+        public String deleteUser(@RequestBody User user) {
+            // TODO: May consider only deleting if user provided is valid
+            userRepository.deleteByEmail(user.getEmail());
+            return "Deleted.";
+        }
     
 }
