@@ -18,3 +18,8 @@ INSERT INTO eventtags (event_id, tag_id) VALUES
 (3, 3),
 (4, 4),
 (5, 5);
+
+INSERT INTO user_table(email, password_hash, user_type, balance) VALUES
+("test1@example.com", "Password@888", "customer", 10000),
+("test2@example.com", "Password@888", "event_manager", 10000),
+("test3@example.com", "Password@888", "ticket_officer", 10000);
