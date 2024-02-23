@@ -2,6 +2,7 @@ package is442.TicketingSystem.models;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import is442.TicketingSystem.utils.utils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,7 +47,8 @@ public class Event {
 	private boolean cancelled;
 	@Column(name = "image_link")
 	private String imageLink;
-	// private double price;
+
+	private double price;
 
 	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
 	private List<Ticket> tickets;
@@ -70,9 +72,9 @@ public class Event {
 	public String getTitle() {
 		return title;
 	}
-	// public double getPrice() {
-	//     return price;
-	// }
+	public double getPrice() {
+		return price;
+	}
 	public boolean getCancelled() {
 		return cancelled;
 	}
@@ -81,6 +83,10 @@ public class Event {
 	}
 	public String getImageLink() {
 		return imageLink;
+	}
+
+	public String toString() {
+		return String.format("ID: %d, Title: %s, image: %s", id, title, imageLink);
 	}
 	
 	public void cancel() {
@@ -109,5 +115,9 @@ public class Event {
 
 	public void setImageLink(String imageLink) {
 		this.imageLink = imageLink;
+	}
+	
+	public void setPrice(double price) {
+		this.price = price;
 	}
 }

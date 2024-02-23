@@ -1,4 +1,4 @@
-package is442.TicketingSystem.types;
+package is442.TicketingSystem.utils;
 
 public enum usertype {
     customer, 

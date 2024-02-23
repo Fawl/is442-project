@@ -8,8 +8,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
+import is442.TicketingSystem.utils.usertype;
 import lombok.Data;
-import is442.TicketingSystem.types.usertype;
 
 
 @Data

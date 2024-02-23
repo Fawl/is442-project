@@ -1,8 +1,8 @@
 package is442.TicketingSystem.controllers;
 
 import is442.TicketingSystem.models.User;
-import is442.TicketingSystem.types.usertype;
 import is442.TicketingSystem.services.UserRepository;
+import is442.TicketingSystem.utils.usertype;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
