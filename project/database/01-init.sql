@@ -10,7 +10,6 @@ CREATE TABLE "tags" (
   "tag_type" varchar(255) NOT NULL -- e.g. "Music"
 );
 
-
 CREATE TABLE "user_table" (
   "id" serial PRIMARY KEY,
   "email" varchar(255) UNIQUE NOT NULL,
@@ -30,7 +29,8 @@ CREATE TABLE "ticketedevent" (
   "cancelled" bool NOT NULL,
   "start_time" timestamp NOT NULL,
   "end_time" timestamp NOT NULL,
-  "image_link" varchar(255)
+  "image_link" varchar(255),
+  "created_by" integer NOT NULL
 );
 
 CREATE TABLE "eventtags" (
@@ -39,8 +39,8 @@ CREATE TABLE "eventtags" (
 );
 
 CREATE TABLE "ticket" (
-  "event_id" integer PRIMARY KEY NOT NULL,
-  "id" serial NOT NULL,
+  "id" serial PRIMARY KEY,
+  "event_id" integer NOT NULL,
   "price" float NOT NULL,
   "purchase_time" timestamp NOT NULL,
   "redeemed" bool NOT NULL DEFAULT false
@@ -52,12 +52,26 @@ CREATE TABLE "purchase" (
   "user_id" integer NOT NULL
 );
 
+CREATE TABLE "event_can_manage" (
+  "user_id" integer NOT NULL,
+  "event_id" integer NOT NULL
+);
+
+-- Table to map event manager to event created
+-- Table to give permissions to ticket officer to modify events
+
 ALTER TABLE "ticket" ADD CONSTRAINT "ticket_event_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
 
-ALTER TABLE "ticket" ADD CONSTRAINT "ticket_ticketpurchase_fk" FOREIGN KEY ("id") REFERENCES "purchase" ("ticket_id");
+ALTER TABLE "ticketedevent" ADD CONSTRAINT "ticketedevent_eventmanager_fk" FOREIGN KEY ("created_by") REFERENCES "user_table" ("id");
+
+ALTER TABLE "purchase" ADD CONSTRAINT "ticket_ticketpurchase_fk" FOREIGN KEY ("ticket_id") REFERENCES "ticket" ("id");
 
 ALTER TABLE "purchase" ADD CONSTRAINT "user_ticketpurchase_fk" FOREIGN KEY ("user_id") REFERENCES "user_table" ("id");
 
 ALTER TABLE "eventtags" ADD CONSTRAINT "event_eventtags_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
 
 ALTER TABLE "eventtags" ADD CONSTRAINT "tag_eventtags_fk" FOREIGN KEY ("tag_id") REFERENCES "tags" ("id");
+
+ALTER TABLE "event_can_manage" ADD CONSTRAINT "event_user_fk" FOREIGN KEY ("user_id") REFERENCES "user_table" ("id");
+
+ALTER TABLE "event_can_manage" ADD CONSTRAINT "event_event_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
