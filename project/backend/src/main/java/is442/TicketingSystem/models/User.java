@@ -17,6 +17,7 @@ import is442.TicketingSystem.types.usertype;
 @Table(name = "user_table")
 public class User {
     @Id
+    @Column
     private String email;
 
     @Column

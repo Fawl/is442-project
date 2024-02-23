@@ -35,35 +35,27 @@ public class UserController {
         @PostMapping("/new")
         public String createUser(@RequestBody User request) {
             try{
-                if (request.getUser_type() == usertype.customer || request.getUser_type() == usertype.ticket_officer || request.getUser_type() == usertype.event_manager){
-                    userRepository.save(request);
-                    return "Success!";
-                }else{
-                    return "Invalid user type, use ['customer', 'ticket_officer', 'event_manager']";
-                }
+                userRepository.save(request);
+                return "Success!";
             }catch( Exception e){
                 return e.toString();
             }
         }
 
-        @PutMapping("update")
+        @PutMapping("/update")
         public String updateUser(@RequestBody User request){
             try{
-                if (request.getUser_type() == usertype.customer || request.getUser_type() == usertype.ticket_officer || request.getUser_type() == usertype.event_manager){
-                    userRepository.save(request);
-                    return "Success!";
-                }else{
-                    return "Invalid user type, use ['customer', 'ticket_officer', 'event_manager']";
-                }
+                userRepository.save(request);
+                return "Success!";
             }catch( Exception e){
                 return e.toString();
             }
         }
 
-        @DeleteMapping
-        public String deleteUser(@RequestBody User user) {
+        @DeleteMapping("/delete")
+        public String deleteByEmail(@RequestBody User user) {
             // TODO: May consider only deleting if user provided is valid
-            userRepository.deleteByEmail(user.getEmail());
+            userRepository.deleteById(user.getEmail());
             return "Deleted.";
         }
     
