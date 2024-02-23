@@ -7,5 +7,6 @@ import is442.TicketingSystem.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-    void deleteByEmail(String email);
+    String deleteByEmail(String email);
+	User findByEmail(String email);
 }
