@@ -42,9 +42,10 @@ CREATE TABLE "ticket" (
   "id" serial PRIMARY KEY,
   "event_id" integer NOT NULL,
   "price" float NOT NULL,
-  "purchase_time" timestamp NOT NULL,
+  "purchase_time" timestamp NOT NULL DEFAULT NOW(),
   "bought_by" integer NOT NULL,
-  "redeemed" bool NOT NULL DEFAULT false
+  "redeemed" bool NOT NULL DEFAULT false,
+  "refunded" bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE "event_can_manage" (
