@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import is442.TicketingSystem.utils.utils;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -62,6 +64,10 @@ public class EventController {
 	@PostMapping("/new")
 	public ResponseEntity<Event> create(@RequestBody Event Event, @RequestParam Long user_id) {
 		try {
+			if (Objects.isNull(Event.getImageLink())) {
+				Event.setImageLink(utils.getRandomImage());
+			}
+
 			Event.setCreatedBy(userRepository.findById(user_id).get());
 			return new ResponseEntity<Event>(eventRepository.save(Event), HttpStatus.CREATED);
 		} catch (Exception e) {
