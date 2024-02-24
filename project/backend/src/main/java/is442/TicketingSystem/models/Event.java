@@ -1,8 +1,8 @@
 package is442.TicketingSystem.models;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
-import is442.TicketingSystem.utils.utils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 /*
@@ -50,8 +52,17 @@ public class Event {
 
 	private double price;
 
+	@Column(name = "cancellation_fee")
+	private double cancellationFee;
+
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
 	private List<Ticket> tickets;
+
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	@JoinColumn(name = "created_by")
+    @ManyToOne(fetch = FetchType.LAZY)
+	private User createdBy;
 
 	// Constructors, getters, and setters
 	public Long getId() {
@@ -83,6 +94,9 @@ public class Event {
 	}
 	public String getImageLink() {
 		return imageLink;
+	}
+	public User getCreatedBy() {
+		return createdBy;
 	}
 
 	public String toString() {
@@ -119,5 +133,9 @@ public class Event {
 	
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 }

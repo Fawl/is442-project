@@ -18,28 +18,30 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @JoinColumn(name = "event_id")
     @ManyToOne
     private Event event;
 
+    @JoinColumn(name = "bought_by")
+    @ManyToOne
+	private User boughtBy;
+
     @Column(name = "redeemed", columnDefinition = "boolean default false")
     private boolean redeemed;
 
+    @Column(name = "refunded", columnDefinition = "boolean default false")
+    private boolean refunded;
+
     @Column(name = "purchase_time")
     private LocalDateTime purchaseTime;
-
-    public Ticket(int id, Event event) {
-        this.id = id;
-        this.event = event;
-    }
 
     public Event getEvent() {
         return event;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
