@@ -42,14 +42,10 @@ CREATE TABLE "ticket" (
   "id" serial PRIMARY KEY,
   "event_id" integer NOT NULL,
   "price" float NOT NULL,
-  "purchase_time" timestamp NOT NULL,
-  "redeemed" bool NOT NULL DEFAULT false
-);
-
-CREATE TABLE "purchase" (
-  "ticket_id" integer PRIMARY KEY NOT NULL,
-  "event_id" integer NOT NULL,
-  "user_id" integer NOT NULL
+  "purchase_time" timestamp NOT NULL DEFAULT NOW(),
+  "bought_by" integer NOT NULL,
+  "redeemed" bool NOT NULL DEFAULT false,
+  "refunded" bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE "event_can_manage" (
@@ -62,11 +58,9 @@ CREATE TABLE "event_can_manage" (
 
 ALTER TABLE "ticket" ADD CONSTRAINT "ticket_event_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
 
+ALTER TABLE "ticket" ADD CONSTRAINT "ticket_user_fk" FOREIGN KEY ("bought_by") REFERENCES "user_table" ("id");
+
 ALTER TABLE "ticketedevent" ADD CONSTRAINT "ticketedevent_eventmanager_fk" FOREIGN KEY ("created_by") REFERENCES "user_table" ("id");
-
-ALTER TABLE "purchase" ADD CONSTRAINT "ticket_ticketpurchase_fk" FOREIGN KEY ("ticket_id") REFERENCES "ticket" ("id");
-
-ALTER TABLE "purchase" ADD CONSTRAINT "user_ticketpurchase_fk" FOREIGN KEY ("user_id") REFERENCES "user_table" ("id");
 
 ALTER TABLE "eventtags" ADD CONSTRAINT "event_eventtags_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
 
