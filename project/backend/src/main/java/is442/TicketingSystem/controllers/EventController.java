@@ -3,6 +3,7 @@ package is442.TicketingSystem.controllers;
 import is442.TicketingSystem.models.Event;
 import is442.TicketingSystem.models.Ticket;
 import is442.TicketingSystem.services.EventRepository;
+import is442.TicketingSystem.services.UserRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,11 @@ import java.util.Optional;
 public class EventController {
 
 	private final EventRepository eventRepository;
+	private final UserRepository userRepository;
 
-	public EventController(EventRepository eventRepository) {
+	public EventController(EventRepository eventRepository, UserRepository userRepository) {
 		this.eventRepository = eventRepository;
+		this.userRepository = userRepository;
 	}
 
 	@GetMapping("/all")
@@ -33,10 +36,10 @@ public class EventController {
 	// unless its done by frontend ofc
 	// This one is just taking within 6 months of RIGHT NOW or within 6 months of
 	// starting datetime
-	@GetMapping
+	@GetMapping("/dates")
 	public List<Event> findOngoing(
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss") LocalDateTime before,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss") LocalDateTime after) {
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-ddThh:mm:ss") LocalDateTime before,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-ddThh:mm:ss") LocalDateTime after) {
 		if (Objects.isNull(after)) {
 			after = LocalDateTime.now();
 		}
@@ -52,28 +55,31 @@ public class EventController {
 	 * Creates an Event object. start & end has to be in the format of
 	 * yyyy-MM-ddThh:mm:ss. The T is very important lol.
 	 * 
-	 * @param Event MUST have <b>title, venue, start, end, numTickets</b>.
+	 * @param Event MUST have <b>title, venue, start, end, numTickets, price</b>.
 	 * @Optional imageLink, cancelled
 	 * @return The created event object
 	 */
 	@PostMapping("/new")
-	public ResponseEntity<Event> create(@RequestBody Event Event) {
+	public ResponseEntity<Event> create(@RequestBody Event Event, @RequestParam Long user_id) {
 		try {
+			Event.setCreatedBy(userRepository.findById(user_id).get());
 			return new ResponseEntity<Event>(eventRepository.save(Event), HttpStatus.CREATED);
-			// if (eventRepository.findById(Event.getId()).isPresent()) {
-			// throw new ResponseStatusException(HttpStatus.CONFLICT, "Event with ID" +
-			// Event.getId() + "is already present\n" + Event.toString());
-			// } else {
-			// }
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Shit aint work: " + e.getMessage());
 		}
 	}
 
 	// update a Event
-	@PutMapping
-	public Event update(@RequestBody Event Event) {
-		return eventRepository.save(Event);
+	@PutMapping("/update")
+	public ResponseEntity<Event> update(@RequestBody Event Event, @RequestParam long event_id) {
+		if (Event.getId() != event_id) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Mismatch Event Id");
+		}
+		Event existingEvent = eventRepository.findById(Event.getId()).get();
+		Event.setCreatedBy(existingEvent.getCreatedBy());
+
+		// TODO: UPDATE ONLY BASED ON WHAT IS BEING SENT
+		return new ResponseEntity<Event>(eventRepository.save(Event), HttpStatus.OK);
 	}
 
 	@GetMapping("/{date}")
@@ -87,13 +93,14 @@ public class EventController {
 		return eventRepository.findByEndTimeBefore(LocalDateTime.now());
 	}
 
-	@GetMapping("/{id}")
-	public Optional<Event> getEvent(@RequestParam long id) {
-		return eventRepository.findById(id);
+	@GetMapping
+	public ResponseEntity<Optional<Event>> getEvent(@RequestParam long id) {
+		Optional<Event> res = eventRepository.findById(id);
+		return new ResponseEntity<Optional<Event>>(res, res.isPresent() ? HttpStatus.FOUND : HttpStatus.GONE);
 	}
 
-	@GetMapping("/{id}/tickets")
-	public List<Ticket> getValidTickets(@PathVariable long id) {
+	@GetMapping("/tickets")
+	public List<Ticket> getValidTickets(@RequestParam long id) {
 		Event event = eventRepository.findById(id).orElse(null);
 		return event.getTickets();
 	}
