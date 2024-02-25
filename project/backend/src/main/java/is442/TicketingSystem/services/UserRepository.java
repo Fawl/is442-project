@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import is442.TicketingSystem.models.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
     String deleteByEmail(String email);
 	User findByEmail(String email);
 }
