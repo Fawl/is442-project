@@ -4,6 +4,8 @@ import is442.TicketingSystem.models.Event;
 import is442.TicketingSystem.models.Ticket;
 import is442.TicketingSystem.services.EventRepository;
 import is442.TicketingSystem.services.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +23,10 @@ import java.util.Optional;
 @RequestMapping("/event")
 public class EventController {
 
-	private final EventRepository eventRepository;
-	private final UserRepository userRepository;
-
-	public EventController(EventRepository eventRepository, UserRepository userRepository) {
-		this.eventRepository = eventRepository;
-		this.userRepository = userRepository;
-	}
+	@Autowired
+	private EventRepository eventRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@GetMapping("/all")
 	public List<Event> findAll() {

@@ -3,6 +3,10 @@ package is442.TicketingSystem.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,10 +26,15 @@ public class Ticket {
 
     @JoinColumn(name = "event_id")
     @ManyToOne
+    // The decoraters are because of: https://stackoverflow.com/questions/20813496/tomcat-exception-cannot-call-senderror-after-the-response-has-been-committed
+    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
     private Event event;
 
     @JoinColumn(name = "bought_by")
     @ManyToOne
+    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+    @JsonIdentityReference(alwaysAsId=true)
 	private User boughtBy;
 
     @Column(name = "redeemed", columnDefinition = "boolean default false")
@@ -37,6 +46,8 @@ public class Ticket {
     @Column(name = "purchase_time")
     private LocalDateTime purchaseTime;
 
+    private float price;
+
     public Event getEvent() {
         return event;
     }
@@ -47,6 +58,18 @@ public class Ticket {
 
     public boolean getRedeemed() {
         return redeemed;
+    }
+
+    public boolean getRefunded() {
+        return refunded;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public User getBoughtBy() {
+        return boughtBy;
     }
 
     public void setRedeemed() {

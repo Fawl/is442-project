@@ -1,7 +1,11 @@
 package is442.TicketingSystem.models;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -55,11 +59,13 @@ public class Event {
 	@Column(name = "cancellation_fee")
 	private double cancellationFee;
 
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+	@JsonIdentityReference(alwaysAsId=true)
 	@OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
 	private List<Ticket> tickets;
 
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+	@JsonIdentityReference(alwaysAsId=true)
 	@JoinColumn(name = "created_by")
     @ManyToOne(fetch = FetchType.LAZY)
 	private User createdBy;
