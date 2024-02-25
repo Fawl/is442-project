@@ -3,8 +3,10 @@ package is442.TicketingSystem.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import is442.TicketingSystem.models.Event;
 import is442.TicketingSystem.models.Ticket;
 import is442.TicketingSystem.models.User;
+import is442.TicketingSystem.services.EventRepository;
 import is442.TicketingSystem.services.TicketRepository;
 import is442.TicketingSystem.services.UserRepository;
 import is442.TicketingSystem.utils.NewTicket;
@@ -29,6 +31,8 @@ public class TicketController {
 	private TicketRepository ticketRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private EventRepository eventRepository;
 
 	/**
 	 * Creates a Ticket object. purchase_time has to be in the format of
@@ -47,9 +51,15 @@ public class TicketController {
 			ticket.isRedeemed(),
 			ticket.isRefunded(),
 			LocalDateTime.now());
+
 		User user = userRepository.findById(ticket.getUser_id()).get();
 		user.setBalance(user.getBalance() - ticket.getPrice());
 		userRepository.save(user);
+
+		Event event = eventRepository.findById(ticket.getEvent_id()).get();
+		event.decrementTickets();
+		eventRepository.save(event);
+
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
 		.body(String.format("Success. New Balance for %s: $%.2f", user.getEmail(), user.getBalance()));
 	}

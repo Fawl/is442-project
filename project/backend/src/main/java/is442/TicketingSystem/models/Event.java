@@ -144,4 +144,12 @@ public class Event {
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
+
+	public void decrementTickets() {
+		this.numTickets--;
+	}
+
+	public void incrementTickets() {
+		this.numTickets++;
+	}
 }
