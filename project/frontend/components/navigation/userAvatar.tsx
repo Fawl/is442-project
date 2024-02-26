@@ -5,6 +5,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
@@ -25,7 +27,13 @@ export default function UserAvatar({
           <AvatarFallback>{session.user?.email?.charAt(0)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent className="max-w-[200px] w-full" align="end">
+        <DropdownMenuLabel className="font-semibold">
+          My Account
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Tickets (0)</DropdownMenuItem>
+        <DropdownMenuItem>Credits</DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
           Sign Out
         </DropdownMenuItem>

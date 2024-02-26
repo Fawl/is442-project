@@ -6,7 +6,6 @@ import is442.TicketingSystem.services.UserRepository;
 import is442.TicketingSystem.utils.usertype;
 import java.util.*;
 
-
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,45 +37,46 @@ public class UserController {
         return userRepository.findByEmail(user.getEmail());
     }
 
-    // Request body needs to have 3 properties  "email", "password_hash" and "user_type"
+    // Request body needs to have 3 properties "email", "password_hash" and
+    // "user_type"
     @PostMapping("/new")
     public String createUser(@RequestBody User request) {
-        try{
-            if (Objects.isNull(findUser(request))){
+        try {
+            if (Objects.isNull(findUser(request))) {
                 userRepository.save(request);
                 return "Success!";
-            }else{
+            } else {
                 return "User already exists";
             }
-            
-        }catch( Exception e){
+        } catch (Exception e) {
             return e.toString();
         }
     }
 
-
     // Takes in a list of 2 objects in JSON format
     // First object only requires 1 property [email] to find the row to be changed
-    // Second object requires 3 properties [email, password_hash, user_type] to update the row
-    // Balance cannot be changed in this function, will be written in separate function
+    // Second object requires 3 properties [email, password_hash, user_type] to
+    // update the row
+    // Balance cannot be changed in this function, will be written in separate
+    // function
     @PutMapping("/update")
-    public String updateUser(@RequestBody List<User> request){
-        try{
+    public String updateUser(@RequestBody List<User> request) {
+        try {
             User before = request.get(0);
             User after = request.get(1);
             before = findUser(before);
-            if (Objects.isNull(before)){
+            if (Objects.isNull(before)) {
                 return "User does not exist, use '/new' to create one instead";
-            }else if(!Objects.isNull(findUser(after))){
+            } else if (!Objects.isNull(findUser(after))) {
                 return "New email already exists under another account";
-            }else{
+            } else {
                 after.setId(before.getId());
                 after.setBalance(before.getBalance());
                 userRepository.save(after);
                 return "Success!";
             }
-            
-        }catch( Exception e){
+
+        } catch (Exception e) {
             return e.toString();
         }
     }

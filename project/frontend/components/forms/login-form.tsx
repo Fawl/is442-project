@@ -61,53 +61,55 @@ export default function LoginForm() {
   return (
     <Form {...form}>
       <form className="space-y-6" onSubmit={form.handleSubmit(handleOnSubmit)}>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-gray-800">Email</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="Email Address"
-                  className={cn(
-                    "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
-                    !field.value && "text-muted-foreground",
-                    form.formState.errors.email?.message &&
-                      "border-red-500 focus-visible:ring-red-500"
-                  )}
-                />
-              </FormControl>
-              <FormMessage className="font-normal" />
-            </FormItem>
-          )}
-        />
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel className="text-gray-800">Email</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="Email Address"
+                    className={cn(
+                      "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                      !field.value && "text-muted-foreground",
+                      form.formState.errors.email?.message &&
+                        "border-red-500 focus-visible:ring-red-500"
+                    )}
+                  />
+                </FormControl>
+                <FormMessage className="font-normal" />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-gray-800">Password</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  placeholder="Password"
-                  className={cn(
-                    "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
-                    !field.value && "text-muted-foreground",
-                    form.formState.errors.password?.message &&
-                      "border-red-500 focus-visible:ring-red-500"
-                  )}
-                />
-              </FormControl>
-              <FormMessage className="font-normal" />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel className="text-gray-800">Password</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="password"
+                    placeholder="Password"
+                    className={cn(
+                      "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
+                      !field.value && "text-muted-foreground",
+                      form.formState.errors.password?.message &&
+                        "border-red-500 focus-visible:ring-red-500"
+                    )}
+                  />
+                </FormControl>
+                <FormMessage className="font-normal" />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <Button type="submit" className="w-full">
           Sign In

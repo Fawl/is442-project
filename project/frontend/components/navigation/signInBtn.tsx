@@ -27,5 +27,3 @@ export default function SignInButton() {
     </Link>
   );
 }
-
-// http://localhost:3000/login?callbackUrl=%2Fbookings

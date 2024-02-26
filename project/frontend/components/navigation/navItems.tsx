@@ -13,20 +13,6 @@ export default function NavItems() {
 
   return (
     <ul className="flex gap-6">
-      {(status === "unauthenticated" || userRole === "customer") && (
-        <li>
-          <Link
-            href={DEFAULT_ROUTES.EXPLORE}
-            className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
-              pathname === DEFAULT_ROUTES.EXPLORE && "text-primary font-medium"
-            }`}
-          >
-            <CompassIcon className="mr-1.5" size={16} />
-            <span>Explore</span>
-          </Link>
-        </li>
-      )}
-
       {userRole === "event_manager" && (
         <li>
           <Link
@@ -42,21 +28,20 @@ export default function NavItems() {
         </li>
       )}
 
-      {userRole === "customer" ||
-        (userRole === "event_manager" && (
-          <li>
-            <Link
-              href={DEFAULT_ROUTES.MY_EVENTS}
-              className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
-                pathname === DEFAULT_ROUTES.MY_EVENTS &&
-                "text-primary font-medium"
-              }`}
-            >
-              <TicketIcon className="mr-1.5" size={16} />
-              <span>My Events</span>
-            </Link>
-          </li>
-        ))}
+      {userRole === "event_manager" && (
+        <li>
+          <Link
+            href={DEFAULT_ROUTES.MY_EVENTS}
+            className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
+              pathname === DEFAULT_ROUTES.MY_EVENTS &&
+              "text-primary font-medium"
+            }`}
+          >
+            <TicketIcon className="mr-1.5" size={16} />
+            <span>My Events</span>
+          </Link>
+        </li>
+      )}
 
       {userRole === "event_manager" && (
         <li>

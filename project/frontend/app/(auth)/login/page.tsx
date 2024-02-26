@@ -4,13 +4,13 @@ import Link from "next/link";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-dvh flex items-center justify-center">
-      <div className="w-full max-w-md mx-auto space-y-6">
-        <div className="text-center space-y-1">
-          <h1 className="text-2xl font-semibold">Welcome Back</h1>
-          <div className="text-sm text-muted-foreground">
-            Enter your email and password to access your account
-          </div>
+    <div className="flex min-h-dvh w-screen items-center justify-center bg-gray-50">
+      <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl sm:border sm:border-gray-100 sm:shadow-xl space-y-6 p-8 sm:p-12">
+        <div>
+          <h3 className="text-xl font-semibold mb-2">Sign In</h3>
+          <p className="text-sm text-gray-500 mb-6">
+            Use your email and password to sign in
+          </p>
         </div>
         <LoginForm />
         <div className="text-sm text-center text-muted-foreground">

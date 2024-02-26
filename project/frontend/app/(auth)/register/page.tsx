@@ -5,32 +5,26 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   return (
-    <div className="relative min-h-dvh flex items-center justify-center">
-      <div className="w-full max-w-md mx-auto space-y-6">
-        <div className="text-center space-y-1">
-          <h1 className="text-2xl font-semibold">Create an account</h1>
-          <div className="text-sm text-muted-foreground text-balance">
-            Just a few clicks and you're in - ready to explore a world of
-            possibilities tailored for you.
-          </div>
+    <div className="flex min-h-dvh w-screen items-center justify-center bg-gray-50">
+      <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl sm:border sm:border-gray-100 sm:shadow-xl space-y-6 p-8 sm:p-12">
+        <div>
+          <h3 className="text-xl font-semibold mb-2">Create an account</h3>
+          <p className="text-sm text-gray-500 mb-6">
+            Use your email and password to register
+          </p>
         </div>
         <RegisterForm />
-        <div className="text-sm text-center text-muted-foreground text-balance">
-          By continuing, you acknowledge that you have read and agree to our{" "}
-          <span className="font-medium text-primary">Terms</span> and{" "}
-          <span className="font-medium text-primary">Privacy Policy</span>.
+
+        <div className="text-sm text-center text-muted-foreground">
+          Already have an account?{" "}
+          <Link
+            className="font-medium text-primary"
+            href={DEFAULT_ROUTES.LOGIN}
+          >
+            Sign In
+          </Link>
         </div>
       </div>
-
-      <Link
-        className={`${buttonVariants({
-          size: "sm",
-          variant: "secondary",
-        })} absolute top-4 right-4 px-2.5 text-sm text-muted-foreground hover:text-primary`}
-        href={DEFAULT_ROUTES.LOGIN}
-      >
-        Back to login
-      </Link>
     </div>
   );
 }

@@ -5,6 +5,31 @@ import { LoginFormSchema } from "./schemas";
 import { getUserByEmail } from "./actions/user.action";
 
 export const authConfig: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: {},
+        password: {},
+      },
+      async authorize(credentials) {
+        const validatedFields = LoginFormSchema.safeParse(credentials);
+        if (validatedFields.success) {
+          const { email, password } = validatedFields.data;
+
+          const user = await getUserByEmail(email);
+          if (!user || !user.password_hash)
+            throw new Error("User with that email does not exist!");
+
+          const passwordsMatch = password === user.password_hash;
+          if (!passwordsMatch) throw new Error("Incorrect password!");
+
+          return user;
+        }
+        return null;
+      },
+    }),
+  ],
   pages: {
     signIn: "/login",
     error: "/login",
@@ -38,29 +63,4 @@ export const authConfig: NextAuthOptions = {
       return session;
     },
   },
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "email", placeholder: "jsmith" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const validatedFields = LoginFormSchema.safeParse(credentials);
-        if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
-
-          const user = await getUserByEmail(email);
-          if (!user || !user.password)
-            throw new Error("User with that email does not exist!");
-
-          const passwordsMatch = password === user.password;
-          if (!passwordsMatch) throw new Error("Incorrect password!");
-
-          return user;
-        }
-        return null;
-      },
-    }),
-  ],
 };
