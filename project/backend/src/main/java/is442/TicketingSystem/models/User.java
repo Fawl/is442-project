@@ -15,6 +15,7 @@ import is442.TicketingSystem.utils.usertype;
 import lombok.Data;
 
 
+
 @Data
 @Entity
 @Table(name = "user_table")
@@ -23,8 +24,8 @@ public class User {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
+    private int id;
+
     @Column
     private String email;
 
