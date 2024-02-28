@@ -1,10 +1,9 @@
-import { authConfig } from "@/auth";
 import CustomDescription from "@/components/custom-description";
 import PurchaseTicketModal from "@/components/modal/purchase-ticket-modal";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { getEventById } from "@/lib/api/event";
 import { MapPinIcon } from "lucide-react";
-import { getServerSession } from "next-auth";
 
 export default async function SpecificEventPage({
   params,
@@ -12,10 +11,9 @@ export default async function SpecificEventPage({
   params: { eventId: string };
 }) {
   const eventId = params.eventId;
-
-  const session = await getServerSession(authConfig);
-  // const eventData = getEventById(eventId);
-
+  console.log("eventId", eventId);
+  const event = await getEventById(eventId);
+  console.log("Specific Event Page", event.length);
   return (
     <>
       <div className="bg-muted aspect-[16:9] h-[240px] rounded-lg"></div>

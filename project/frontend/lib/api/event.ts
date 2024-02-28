@@ -1,6 +1,4 @@
-"use server";
-
-export async function getAllEvent() {
+export async function getAllEvents() {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_BACKEND + "/event/all",
@@ -10,23 +8,20 @@ export async function getAllEvent() {
     );
 
     if (!response.ok) {
-      // Handle non-successful responses
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data;
+    return response.json();
   } catch (error) {
-    // Handle any errors that occurred during the fetch
-    console.error("Error fetching data:", error);
-    throw error; // You might want to rethrow or handle it as needed
+    console.error("Error fetching events:", error);
+    throw error;
   }
 }
 
 export async function getEventById(id: string) {
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND + `/event/${id}`,
+      process.env.NEXT_PUBLIC_BACKEND + `/event?id=${id}`,
       {
         method: "GET",
       }
@@ -34,10 +29,9 @@ export async function getEventById(id: string) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    const data = await response.json();
-    return data;
+    return response.json();
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching event:", error);
     throw error;
   }
 }
