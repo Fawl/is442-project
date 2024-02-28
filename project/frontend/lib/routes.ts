@@ -6,4 +6,5 @@ export const DEFAULT_ROUTES = {
   EXPLORE: "/explore",
   DASHBOARD: "/dashboard",
   MY_EVENTS: "/my-events",
+  MY_TICKETS: "/my-tickets",
 };

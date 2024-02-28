@@ -57,6 +57,21 @@ export default function NavItems() {
           </Link>
         </li>
       )}
+
+
+        <li>
+          <Link
+            href={DEFAULT_ROUTES.MY_TICKETS}
+            className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
+              pathname === DEFAULT_ROUTES.MY_TICKETS &&
+              "text-primary font-medium"
+            }`}
+          >
+            
+            <span>My Tickets</span>
+          </Link>
+        </li>
+      
     </ul>
   );
 }
