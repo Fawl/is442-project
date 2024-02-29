@@ -1,10 +1,9 @@
 "use client";
 import { DEFAULT_ROUTES } from "@/lib/routes";
-import { CompassIcon, LayoutDashboardIcon, TicketIcon } from "lucide-react";
+import { LayoutDashboardIcon, TicketIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
 
 export default function NavItems() {
   const pathname = usePathname();
@@ -31,21 +30,6 @@ export default function NavItems() {
       {userRole === "event_manager" && (
         <li>
           <Link
-            href={DEFAULT_ROUTES.MY_EVENTS}
-            className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
-              pathname === DEFAULT_ROUTES.MY_EVENTS &&
-              "text-primary font-medium"
-            }`}
-          >
-            <TicketIcon className="mr-1.5" size={16} />
-            <span>My Events</span>
-          </Link>
-        </li>
-      )}
-
-      {userRole === "event_manager" && (
-        <li>
-          <Link
             href={DEFAULT_ROUTES.CREATE_EVENT}
             className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
               pathname === DEFAULT_ROUTES.CREATE_EVENT &&
@@ -58,7 +42,7 @@ export default function NavItems() {
         </li>
       )}
 
-
+      {userRole === "customer" && (
         <li>
           <Link
             href={DEFAULT_ROUTES.MY_TICKETS}
@@ -67,11 +51,10 @@ export default function NavItems() {
               "text-primary font-medium"
             }`}
           >
-            
             <span>My Tickets</span>
           </Link>
         </li>
-      
+      )}
     </ul>
   );
 }

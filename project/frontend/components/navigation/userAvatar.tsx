@@ -16,6 +16,7 @@ export default function UserAvatar({
   userServerSession: any;
 }) {
   const session = userServerSession || useSession();
+  const userRole = session.user?.role;
 
   return (
     <DropdownMenu>
@@ -32,8 +33,12 @@ export default function UserAvatar({
           My Account
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Tickets (0)</DropdownMenuItem>
-        <DropdownMenuItem>Credits</DropdownMenuItem>
+        {userRole === "customer" && (
+          <>
+            <DropdownMenuItem>Tickets</DropdownMenuItem>
+            <DropdownMenuItem>Credits</DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
           Sign Out
         </DropdownMenuItem>

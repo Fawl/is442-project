@@ -40,7 +40,6 @@ export default function LoginForm() {
         password: values.password,
         redirect: false,
       });
-      console.log(response);
       if (response && response.ok) {
         {
           searchParams.get("callbackUrl")
@@ -49,7 +48,6 @@ export default function LoginForm() {
         }
         router.refresh();
       }
-
       if (response && response.error) {
         toast.error(response.error);
       }

@@ -1,5 +1,4 @@
 import { NextAuthOptions } from "next-auth";
-
 import CredentialsProvider from "next-auth/providers/credentials";
 import { LoginFormSchema } from "./schemas";
 import { getUserByEmail } from "./actions/user.action";
@@ -16,14 +15,12 @@ export const authConfig: NextAuthOptions = {
         const validatedFields = LoginFormSchema.safeParse(credentials);
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
-
           const user = await getUserByEmail(email);
+
           if (!user || !user.password_hash)
             throw new Error("User with that email does not exist!");
-
           const passwordsMatch = password === user.password_hash;
           if (!passwordsMatch) throw new Error("Incorrect password!");
-
           return user;
         }
         return null;

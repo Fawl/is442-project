@@ -12,8 +12,9 @@ export default async function SpecificEventPage({
 }) {
   const eventId = params.eventId;
   console.log("eventId", eventId);
-  const event = await getEventById(eventId);
-  console.log("Specific Event Page", event.length);
+  // const event = await getEventById(eventId);
+  // console.log("Specific Event Page", event.length);
+
   return (
     <>
       <div className="bg-muted aspect-[16:9] h-[240px] rounded-lg"></div>

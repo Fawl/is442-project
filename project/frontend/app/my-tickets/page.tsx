@@ -1,11 +1,9 @@
-import TicketTable from "@/components/tickets/ticketTable";
+import TicketTable from "@/components/table/ticketTable";
 
-export default function myTickets(){
-    return (
+export default function myTickets() {
+  return (
     <div>
-        <TicketTable/>
+      <TicketTable />
     </div>
-    
-        
-    )
+  );
 }

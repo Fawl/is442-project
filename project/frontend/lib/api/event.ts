@@ -35,3 +35,25 @@ export async function getEventById(id: string) {
     throw error;
   }
 }
+
+export async function createEvent(payload: any) {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + `/event/new?user_id=${payload.user_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error creating event:", error);
+    throw error;
+  }
+}

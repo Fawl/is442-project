@@ -1,8 +1,7 @@
-import { Badge } from "../ui/badge";
-import { format } from "date-fns";
 import { TicketedEvent } from "@/types";
+import { format } from "date-fns";
+import { Clock3Icon, MapPinned } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
-import { Clock3Icon, MapPinned, PinIcon } from "lucide-react";
 interface EventCardProps {
   event: TicketedEvent;
 }
@@ -38,7 +37,9 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
         <div>
           <div className="flex flex-row items-center gap-1.5 line-clamp-1">
-            <span className="text-[#f05537] font-semibold">$30.00</span>
+            <span className="text-[#f05537] font-semibold">
+              ${event.price.toFixed(2)}
+            </span>
             <span className="text-sm text-muted-foreground/80 font-normal tracking-wide">
               /ticket
             </span>

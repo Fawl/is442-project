@@ -11,14 +11,20 @@ export const RegisterFormSchema = z.object({
 });
 
 export const CreateEventSchema = z.object({
-  eventName: z.string().min(1, {
+  title: z.string().min(1, {
     message: "Required",
-  }),
+  }), // REQUIRED
   venue: z.string().min(1, {
     message: "Required",
-  }),
-  date: z.date(),
-  startTime: z.string(),
-  ticketPrice: z.coerce.number(),
-  totalTickets: z.coerce.number().gte(1, "Must be 1 or more"),
+  }), // REQUIRED
+  description: z.string(), // OPTIONAL
+  price: z.coerce.number(), // REQUIRED
+  numTickets: z.coerce.number().gte(1, "Must be 1 or more"), // REQUIRED
+  cancellationFee: z.coerce.number(), // OPTIONAL
+  startDate: z.date(), // REQUIRED
+  endDate: z.date(), // REQUIRED
+  startTime: z.string(), // REQUIRED
+  endTime: z.string(), // REQUIRED
+  // imageLink: z.string(), // AUTO-GENERATED
+  // createdBy: z.string(), // REQUIRED
 });
