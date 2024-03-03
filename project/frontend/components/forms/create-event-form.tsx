@@ -23,8 +23,10 @@ import { Calendar } from "../ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format, set } from "date-fns";
 import { createEvent } from "@/lib/api/event";
+import { useRouter } from "next/navigation";
 
 export default function CreateEventForm() {
+  const router = useRouter();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const form = useForm<z.infer<typeof CreateEventSchema>>({
@@ -71,7 +73,10 @@ export default function CreateEventForm() {
     // alert(JSON.stringify(payload, null, 2));
     try {
       const response = await createEvent(payload);
-      console.log("Event created:", response);
+      if (response) {
+        router.push(`/`);
+        router.refresh();
+      }
     } catch (error) {
       console.error("Error creating event:", error);
       throw error;

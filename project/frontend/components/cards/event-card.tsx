@@ -1,5 +1,5 @@
 import { TicketedEvent } from "@/types";
-import { format } from "date-fns";
+import { addHours, format } from "date-fns";
 import { Clock3Icon, MapPinned } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 interface EventCardProps {
@@ -7,9 +7,18 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event }: EventCardProps) {
-  const formattedDate: string = format(event.start, "MMMM d");
-  const formattedStartTime: string = format(event.start, "h:mm a");
-  const formattedEndTime: string = format(event.end, "h:mm a");
+  const utcStart = new Date(event.start);
+  const utcEnd = new Date(event.end);
+
+  // Add 8 hours to convert UTC to Singapore Time (SGT)
+  const singaporeTimeOffset = 8;
+  const singaporeStart = addHours(utcStart, singaporeTimeOffset);
+  const singaporeEnd = addHours(utcEnd, singaporeTimeOffset);
+
+  // Format the date and time in Singapore Time
+  const formattedDate: string = format(singaporeStart, "MMMM d");
+  const formattedStartTime: string = format(singaporeStart, "h:mm a");
+  const formattedEndTime: string = format(singaporeEnd, "h:mm a");
 
   return (
     <div className="hover:cursor-pointer space-y-3 bg-white border shadow-sm rounded-lg p-2">

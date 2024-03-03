@@ -15,9 +15,12 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { createUser } from "@/actions/user.action";
+import { createUser } from "@/lib/api/user";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof RegisterFormSchema>>({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
@@ -29,11 +32,13 @@ export default function RegisterForm() {
   const handleOnSubmit = async (data: any) => {
     // alert(JSON.stringify(data, null, 2));
     const response = await createUser({
-      ...data,
+      email: data.email,
       password_hash: data.password,
-      user_type: "customer",
+      user_type: "customer", // REMARKS: CREATE CUSTOMER BY DEFAULT
     });
-    alert(response);
+    if (response.ok) {
+      toast.success("User created successfully");
+    }
   };
 
   return (
@@ -79,8 +84,8 @@ export default function RegisterForm() {
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          Sign In
+        <Button type="submit" className="w-full capitalize">
+          Create an account
         </Button>
       </form>
     </Form>

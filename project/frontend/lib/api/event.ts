@@ -4,6 +4,7 @@ export async function getAllEvents() {
       process.env.NEXT_PUBLIC_BACKEND + "/event/all",
       {
         method: "GET",
+        cache: "no-cache",
       }
     );
 
@@ -24,6 +25,7 @@ export async function getEventById(id: string) {
       process.env.NEXT_PUBLIC_BACKEND + `/event?id=${id}`,
       {
         method: "GET",
+        cache: "no-cache",
       }
     );
     if (!response.ok) {
