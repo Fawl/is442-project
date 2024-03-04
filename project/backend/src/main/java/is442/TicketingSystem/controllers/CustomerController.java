@@ -18,7 +18,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/C")
+@RequestMapping("/user")
 public class CustomerController {
 
 	@Autowired

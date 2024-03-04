@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import is442.TicketingSystem.utils.utils;
+import is442.TicketingSystem.utils.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/EM")
+@RequestMapping("/event")
 public class EventManagerController {
 
 	@Autowired

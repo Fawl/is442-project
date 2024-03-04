@@ -9,7 +9,7 @@ import is442.TicketingSystem.models.User;
 import is442.TicketingSystem.services.EventRepository;
 import is442.TicketingSystem.services.TicketRepository;
 import is442.TicketingSystem.services.UserRepository;
-import is442.TicketingSystem.utils.NewTicket;
+import is442.TicketingSystem.utils.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/TO")
+@RequestMapping("/ticket")
 public class TicketOfficer {
 
 	@Autowired
