@@ -87,8 +87,6 @@ public class CustomerController {
 		}
     }
 
-    // Request body only needs to have 1 property [email]
-    // Returns user's details if found, else returns null
     @GetMapping("/find")
     public ResponseEntity<User> findUser(@RequestParam String email) {
         User u = userRepository.findByEmail(email);
@@ -102,8 +100,6 @@ public class CustomerController {
         }
     }
 
-    // Request body needs to have 3 properties "email", "password_hash" and
-    // "user_type"
     @PostMapping("/new")
     public ResponseEntity<User> createUser(@RequestParam String email, String password_hash, String usertype) {
 
@@ -123,12 +119,6 @@ public class CustomerController {
         }
     }
 
-    // Takes in a list of 2 objects in JSON format
-    // First object only requires 1 property [email] to find the row to be changed
-    // Second object requires 3 properties [email, password_hash, user_type] to
-    // update the row
-    // Balance cannot be changed in this function, will be written in separate
-    // function
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestParam String emailBefore, @RequestParam String emailAfter, @RequestParam String password_hash) {
         try {
@@ -151,9 +141,6 @@ public class CustomerController {
         }
     }
 
-    // Request body only requires 1 property [email]
-    // Returns 1 if successful
-    // Returns 0 if no such user
     @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUser(@RequestParam String email) {
