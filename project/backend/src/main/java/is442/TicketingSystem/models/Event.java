@@ -60,7 +60,7 @@ public class Event {
 	private float price;
 
 	@Column(name = "cancellation_fee")
-	private double cancellationFee;
+	private float cancellationFee;
 
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)

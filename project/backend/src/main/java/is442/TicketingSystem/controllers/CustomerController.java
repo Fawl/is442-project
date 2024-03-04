@@ -41,12 +41,26 @@ public class CustomerController {
     @GetMapping("/cancel")
     public ResponseEntity<Ticket> cancelTicket(@RequestParam int tid){
         Ticket t = ticketRepository.findById(tid);
+        if (LocalDateTime.now().isAfter(t.getEvent().getStartTime().minusDays(2))){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
         if (Objects.isNull(t)){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        if (t.getRefunded() || t.getRedeemed()){
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
         Event e = t.getEvent();
         User u = t.getBoughtBy();
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        u.setBalance(u.getBalance() + t.getPrice() - e.getCancellationFee());
+        e.setNumTickets(e.getNumTickets() + 1);
+        t.setRefunded(true);
+
+        userRepository.save(u);
+        eventRepository.save(e);
+        ticketRepository.save(t);
+        return new ResponseEntity<>(null, HttpStatus.OK);
 
         
     }

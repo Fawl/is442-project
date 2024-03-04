@@ -131,9 +131,24 @@ public class EventManagerController {
 	}
 
 	@GetMapping("/tickets")
-	public List<Ticket> getValidTickets(@RequestParam long id) {
+	public ResponseEntity<List<Ticket>> getValidTickets(@RequestParam long id) {
 		Event event = eventRepository.findById(id).orElse(null);
-		return event.getTickets();
+		if (Objects.isNull(event)){
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(event.getTickets(), HttpStatus.OK);
 	}
 
-}
+	@PutMapping("/cancellation_fee")
+		public ResponseEntity<Event> setCancellationFee(@RequestParam int eid, @RequestParam float fee){
+			Event e = eventRepository.findById(eid);
+			if (Objects.isNull(e)){
+				return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			}
+			e.setCancellationFee(fee);
+			
+			return new ResponseEntity<>(eventRepository.save(e), HttpStatus.OK);
+		}
+	}
+
+
