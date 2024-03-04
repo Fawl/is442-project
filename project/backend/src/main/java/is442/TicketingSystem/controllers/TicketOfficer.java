@@ -13,8 +13,12 @@ import is442.TicketingSystem.utils.NewTicket;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.catalina.connector.Response;
+import org.apache.coyote.http11.Http11InputBuffer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +28,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/ticket")
-public class TicketController {
+@RequestMapping("/TO")
+public class TicketOfficer {
 
 	@Autowired
 	private TicketRepository ticketRepository;
@@ -68,5 +72,22 @@ public class TicketController {
 	public ResponseEntity<List<Ticket>> getMethodName(@RequestParam Long user_id) {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ticketRepository.findByBoughtBy(user_id));
 	}
+
+	@GetMapping("verify")
+	public ResponseEntity<Boolean> verifyTicket(@RequestParam int tid){
+		Ticket t = ticketRepository.findById(tid);
+
+		if (Objects.isNull(t)){
+			return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+		}
+		if (t.getRedeemed() || t.getRefunded()){
+			return new ResponseEntity<>(false, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(true, HttpStatus.OK);
+	}
 	
+	@GetMapping("purchase")
+	public ResponseEntity<Ticket> purchaseTicket(){
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
 }

@@ -1,9 +1,7 @@
 package is442.TicketingSystem.controllers;
 
-import is442.TicketingSystem.models.Event;
-import is442.TicketingSystem.models.Ticket;
-import is442.TicketingSystem.services.EventRepository;
-import is442.TicketingSystem.services.UserRepository;
+import is442.TicketingSystem.models.*;
+import is442.TicketingSystem.services.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,19 +18,47 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/event")
-public class EventController {
+@RequestMapping("/EM")
+public class EventManagerController {
 
 	@Autowired
 	private EventRepository eventRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private TicketRepository ticketRepository;
 
 	@GetMapping("/all")
 	public List<Event> findAll() {
 		return eventRepository.findAll();
 	}
 
+
+	@GetMapping("/cancel")
+	public ResponseEntity<Event> cancelEvent(@RequestParam int eid){
+		Event e = eventRepository.findById(eid);
+		if (Objects.isNull(e)){
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+
+		if (e.getCancelled()){
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
+		e.setCancelled(true);
+		eventRepository.save(e);
+
+		List<Ticket> tl = ticketRepository.findByEventId(eid);
+		for (Ticket t : tl){
+
+			User u = t.getBoughtBy();
+			u.setBalance(u.getBalance() + t.getPrice());
+			userRepository.save(u);
+			t.setRefunded(true);
+			ticketRepository.save(t);
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
+
+	}
 	// TODO: Might need to consider getting registerable events OR future events,
 	// unless its done by frontend ofc
 	// This one is just taking within 6 months of RIGHT NOW or within 6 months of
@@ -98,7 +124,7 @@ public class EventController {
 		return eventRepository.findByEndTimeBefore(LocalDateTime.now());
 	}
 
-	@GetMapping
+	@GetMapping("find")
 	public ResponseEntity<Optional<Event>> getEvent(@RequestParam long id) {
 		Optional<Event> res = eventRepository.findById(id);
 		return new ResponseEntity<Optional<Event>>(res, res.isPresent() ? HttpStatus.FOUND : HttpStatus.GONE);

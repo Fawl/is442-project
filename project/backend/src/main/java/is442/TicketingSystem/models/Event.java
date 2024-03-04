@@ -18,12 +18,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 /*
 SO WHAT DID I DISCOVER? JPA/PSQL IS VERY PARTICULAR WITH THE TABLE NAME.
 AND IT AUTO LOWER CASES YOUR FUCKING TABLE NAME, UNLESS YOU ADD IN spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 IN THE application.properties
  */
+
+@Data
 @Entity
 @Table(name = "ticketedevent")
 public class Event {
@@ -53,8 +56,8 @@ public class Event {
 	private boolean cancelled;
 	@Column(name = "image_link")
 	private String imageLink;
-
-	private double price;
+	@Column
+	private float price;
 
 	@Column(name = "cancellation_fee")
 	private double cancellationFee;
@@ -89,7 +92,7 @@ public class Event {
 	public String getTitle() {
 		return title;
 	}
-	public double getPrice() {
+	public float getPrice() {
 		return price;
 	}
 	public boolean getCancelled() {
@@ -137,7 +140,7 @@ public class Event {
 		this.imageLink = imageLink;
 	}
 	
-	public void setPrice(double price) {
+	public void setPrice(float price) {
 		this.price = price;
 	}
 

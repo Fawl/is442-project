@@ -11,7 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
-import is442.TicketingSystem.utils.usertype;
+import is442.TicketingSystem.utils.UserType;
 import lombok.Data;
 
 
@@ -24,7 +24,7 @@ public class User {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column
     private String email;
@@ -35,7 +35,7 @@ public class User {
     @Enumerated(EnumType.STRING) // Use EnumType.STRING to store enum names as strings
     @Column
     @JdbcType(PostgreSQLEnumJdbcType.class)
-    private usertype user_type;
+    private UserType user_type;
 
     @Column
     private float balance = 1000;

@@ -15,6 +15,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	// Refer to https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
 	List<Event> findByTitle(String title);
 
+	Event findById(int id);
+
 	List<Event> findByStartTimeAfterAndEndTimeBeforeAndCancelledFalse(LocalDateTime start, LocalDateTime end);
 
 	// List<Event> findAllOrderByPrice();

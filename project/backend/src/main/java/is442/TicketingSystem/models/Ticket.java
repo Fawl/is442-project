@@ -15,7 +15,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "ticket")
 public class Ticket {
@@ -76,4 +78,7 @@ public class Ticket {
         this.redeemed = true;
     }
 
+    public String toString() {
+        return "ID: " + this.getId() + ", Event ID: " + this.getEvent() + ", Price: " + this.getPrice() + ", purchase time: " + this.getPurchaseTime() + ", bought by: " + this.getBoughtBy() + ", redeemed: " + this.getRedeemed() + ", refunded: " + this.getRefunded();
+    }
 }
