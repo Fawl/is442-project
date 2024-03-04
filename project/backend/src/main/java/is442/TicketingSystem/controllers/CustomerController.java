@@ -101,16 +101,11 @@ public class CustomerController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<User> createUser(@RequestParam String email, String password_hash, String usertype) {
+    public ResponseEntity<User> createUser(@RequestBody User user) {
 
         try {
-            if (Objects.isNull(userRepository.findByEmail(email))) {
-                User u = new User();
-                u.setEmail(email);
-                u.setPassword_hash(password_hash);
-                u.setUser_type(UserType.valueOf(usertype.toLowerCase()));
-                
-                return new ResponseEntity<>(userRepository.save(u), HttpStatus.CREATED);
+            if (Objects.isNull(userRepository.findByEmail(user.getEmail()))) {
+                return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
