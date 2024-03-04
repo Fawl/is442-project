@@ -3,7 +3,7 @@ package is442.TicketingSystem.controllers;
 import is442.TicketingSystem.models.*;
 import jakarta.transaction.Transactional;
 import is442.TicketingSystem.services.*;
-import is442.TicketingSystem.utils.UserType;
+import is442.TicketingSystem.utils.*;
 import java.util.*;
 
 import org.springframework.data.repository.query.Param;
@@ -115,18 +115,19 @@ public class CustomerController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestParam String emailBefore, @RequestParam String emailAfter, @RequestParam String password_hash) {
+    public ResponseEntity<User> updateUser(@RequestBody UpdateUserRequest request) {
         try {
 
-            User u = userRepository.findByEmail(emailBefore);
+            User u = userRepository.findByEmail(request.getEmailBefore());
             
             if (Objects.isNull(u)) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            } else if (!Objects.isNull(userRepository.findByEmail(emailAfter))) {
+            } else if (!Objects.isNull(userRepository.findByEmail(request.getEmailAfter()))) {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             } else {
-                u.setEmail(emailAfter);
-                u.setPassword_hash(password_hash);
+                u.setEmail(request.getEmailAfter());
+                u.setPassword_hash(request.getPassword_hash());
+                u.setUser_type(request.getUser_type());
                 return new ResponseEntity<>(userRepository.save(u), HttpStatus.OK);
             
             }
