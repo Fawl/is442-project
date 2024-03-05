@@ -23,6 +23,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 	List<Ticket> findByEventId(int eid);
 	List<Ticket> findByBoughtBy(User u);
 	Ticket findById(int id);
+	List<Ticket> findByEventIdAndBoughtBy(int eid, User u);
 
 	@Query(value = "SELECT * FROM \"ticket\" WHERE bought_by = :id", nativeQuery = true)
 	List<Ticket> findByBoughtBy(@Param("id") Long user_id);

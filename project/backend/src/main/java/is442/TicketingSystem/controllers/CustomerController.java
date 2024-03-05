@@ -72,14 +72,18 @@ public class CustomerController {
     @PostMapping("/purchase")
     public ResponseEntity<List<Ticket>> purchaseTicket(@RequestParam int event_id, @RequestParam int user_id, @RequestParam(required = false) Integer qty) {
         qty = Objects.isNull(qty) ? 1 : qty;
+        
         Event e = eventRepository.findById(event_id);
         User u = userRepository.findById(user_id);
         if (Objects.isNull(u) || Objects.isNull(e)){
             return ResponseEntity.notFound().build();
         }
-
+        List<Ticket> tl = ticketRepository.findByEventIdAndBoughtBy(event_id , u);
+        if (tl.size() + qty > 4){
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
         if (u.getBalance()<e.getPrice() * qty){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
 
         ArrayList<Ticket> allCreated = new ArrayList<Ticket>();
@@ -139,6 +143,7 @@ public class CustomerController {
     @PostMapping("/new")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
+            System.out.println(user.getPassword_hash());
             if (Objects.isNull(userRepository.findByEmail(user.getEmail()))) {
                 return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
             } else {
