@@ -1,7 +1,7 @@
 package is442.TicketingSystem.utils;
 
 public enum UserType {
-    customer, 
+    customer,
     event_manager,
     ticket_officer,
 }
