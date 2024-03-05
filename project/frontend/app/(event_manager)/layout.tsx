@@ -1,13 +1,25 @@
+import { authConfig } from "@/auth";
 import Navbar from "@/components/navigation/navbar";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authConfig);
+  if (!session) {
+    return redirect("/login?callbackUrl=/create");
+  }
+
+  if (session.user?.role !== "event_manager") {
+    return <div>No access</div>;
+  }
+
   return (
     <>
       <Navbar />

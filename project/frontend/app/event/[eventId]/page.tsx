@@ -3,7 +3,9 @@ import PurchaseTicketModal from "@/components/modal/purchase-ticket-modal";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getEventById } from "@/lib/api/event";
+import { addHours, format } from "date-fns";
 import { MapPinIcon } from "lucide-react";
+import Image from "next/image";
 
 export default async function SpecificEventPage({
   params,
@@ -11,18 +13,41 @@ export default async function SpecificEventPage({
   params: { eventId: string };
 }) {
   const eventId = params.eventId;
-  console.log("eventId", eventId);
   const event = await getEventById(eventId);
-  console.log("Specific Event Page", event.length);
+
+  const utcStart = new Date(event.start);
+  const utcEnd = new Date(event.end);
+
+  // Add 8 hours to convert UTC to Singapore Time (SGT)
+  const singaporeTimeOffset = 8;
+  const singaporeStart = addHours(utcStart, singaporeTimeOffset);
+  const singaporeEnd = addHours(utcEnd, singaporeTimeOffset);
+
+  // Format the date and time in Singapore Time
+  const formattedDate: string = format(singaporeStart, "EEEE, MMMM d");
+  const formattedStartTime: string = format(singaporeStart, "h:mm a");
+  const formattedEndTime: string = format(singaporeEnd, "h:mm a");
+
+  if (!event) {
+    return <div>Event not found</div>;
+  }
 
   return (
     <>
-      <div className="bg-muted aspect-[16:9] h-[240px] rounded-lg"></div>
+      <div className="relative bg-muted aspect-[16:9] h-[240px] rounded-lg">
+        <Image
+          src={event.imageLink}
+          alt={event.title}
+          layout="fill"
+          className="rounded-lg object-cover"
+        />
+      </div>
+
       <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
         <section className="w-full md:w-2/3 space-y-6">
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold line-clamp-1">
-              Generative AI Hackathon
+              {event.title}
             </h2>
 
             <div className="space-y-2">
@@ -53,18 +78,29 @@ export default async function SpecificEventPage({
 
         <section className="w-full h-fit md:w-1/3 space-y-6 border rounded-lg p-4">
           <div className="space-y-2">
-            <div className="text-gray-800 font-medium">Pricing</div>
+            <div className="flex items-center justify-between">
+              <div className="text-gray-800 font-medium">Pricing</div>
+              {event.cancelled && (
+                <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                  Cancelled
+                </span>
+              )}
+            </div>
             <div className="flex items-center justify-between">
               <div className="flex flex-row items-center gap-1.5 line-clamp-1">
                 <span className="text-[#f05537] text-2xl font-semibold">
-                  $30.00
+                  ${event.price.toFixed(2)}
                 </span>
                 <span className="text-sm text-muted-foreground/80 font-normal tracking-wide">
                   /ticket
                 </span>
               </div>
               <PurchaseTicketModal
-                action={<Button className="font-normal">Book Now</Button>}
+                action={
+                  <Button className="font-normal" disabled={event.cancelled}>
+                    Book Now
+                  </Button>
+                }
               />
             </div>
           </div>
@@ -80,10 +116,10 @@ export default async function SpecificEventPage({
               </div>
               <div className="space-y-0.5 tracking-tight">
                 <div className="text-sm text-gray-800 font-medium">
-                  Saturday, June 15
+                  {formattedDate}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  10:00 AM to 5:00PM
+                  {formattedStartTime} to {formattedEndTime}
                 </div>
               </div>
             </div>
@@ -93,15 +129,8 @@ export default async function SpecificEventPage({
               </div>
               <div className="flex flex-col text-sm text-muted-foreground tracking-tight">
                 <span className="text-sm text-gray-800 font-medium">
-                  80 Stamford Rd, Singapore 178902
+                  {event.venue}
                 </span>
-                <a
-                  className="underline underline-offset-[3px]"
-                  href="https://goo.gl/maps/8Y5j8v5r5Y3Z8v5r5Y3Z"
-                  target="_blank"
-                >
-                  View on map
-                </a>
               </div>
             </div>
           </div>

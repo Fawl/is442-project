@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { any, z } from "zod";
 import { RegisterFormSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -31,13 +31,20 @@ export default function RegisterForm() {
 
   const handleOnSubmit = async (data: any) => {
     // alert(JSON.stringify(data, null, 2));
-    const response = await createUser({
-      email: data.email,
-      password_hash: data.password,
-      user_type: "customer", // REMARKS: CREATE CUSTOMER BY DEFAULT
-    });
-    if (response.ok) {
-      toast.success("User created successfully");
+
+    try {
+      const response = await createUser({
+        email: data.email,
+        password_hash: data.password,
+        user_type: "customer", // REMARKS: CREATE CUSTOMER BY DEFAULT
+      });
+      if (response.ok) {
+        toast.success("User created successfully");
+        router.push("/login");
+        router.refresh();
+      }
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
