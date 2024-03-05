@@ -17,6 +17,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
 	Event findById(int id);
 
+	@Query(value = "SELECT * FROM \"ticketedevent\" e WHERE e.created_by = :createdBy", nativeQuery = true)
+	List<Event> findByCreatedBy(@Param("createdBy") Long createdBy);
+
 	List<Event> findByStartTimeAfterAndEndTimeBeforeAndCancelledFalse(LocalDateTime start, LocalDateTime end);
 
 	// List<Event> findAllOrderByPrice();
@@ -27,6 +30,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
 	// Custom query
     // FUCKING SHIT
-	@Query(value = "SELECT * FROM \"Events\" e WHERE e.end_time <= :date and e.cancelled = false ", nativeQuery = true)
+	@Query(value = "SELECT * FROM \"ticketedevent\" e WHERE e.end_time <= :date and e.cancelled = false ", nativeQuery = true)
     List<Event> findByOngoingEvents(@Param("date") LocalDateTime date);
 }
