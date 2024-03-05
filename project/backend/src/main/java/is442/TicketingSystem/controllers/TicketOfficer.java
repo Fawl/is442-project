@@ -10,13 +10,14 @@ import is442.TicketingSystem.services.EventRepository;
 import is442.TicketingSystem.services.TicketRepository;
 import is442.TicketingSystem.services.UserRepository;
 import is442.TicketingSystem.utils.*;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-import org.apache.catalina.connector.Response;
-import org.apache.coyote.http11.Http11InputBuffer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,14 +30,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/ticket")
-public class TicketOfficer {
+public class TicketOfficer extends EventController {
 
 	@Autowired
 	private TicketRepository ticketRepository;
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private EventRepository eventRepository;
 
 	/**
 	 * Creates a Ticket object. purchase_time has to be in the format of
@@ -46,15 +45,17 @@ public class TicketOfficer {
 	 * @Optional redeemed, refunded
 	 * @return The created ticket object
 	 */
+	@Transactional
 	@PostMapping("/new")
-	public ResponseEntity<String> getMethodName(@RequestBody NewTicket ticket) {
+	public ResponseEntity<Map<String, String>> createTicket(@RequestBody NewTicket ticket) {
 		ticketRepository.createTicket(
 			ticket.getEvent_id(),
 			ticket.getUser_id(),
 			ticket.getPrice(),
 			ticket.isRedeemed(),
 			ticket.isRefunded(),
-			LocalDateTime.now());
+			LocalDateTime.now()
+		);
 
 		User user = userRepository.findById(ticket.getUser_id()).get();
 		user.setBalance(user.getBalance() - ticket.getPrice());
@@ -65,7 +66,7 @@ public class TicketOfficer {
 		eventRepository.save(event);
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-		.body(String.format("Success. New Balance for %s: $%.2f", user.getEmail(), user.getBalance()));
+		.body(Map.of("message", String.format("Success. New Balance for %s: $%.2f", user.getEmail(), user.getBalance())));
 	}
 
 	@GetMapping("/user")
@@ -73,21 +74,27 @@ public class TicketOfficer {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ticketRepository.findByBoughtBy(user_id));
 	}
 
-	@GetMapping("verify")
-	public ResponseEntity<Boolean> verifyTicket(@RequestParam int tid){
-		Ticket t = ticketRepository.findById(tid);
+	@GetMapping("/verify")
+	public ResponseEntity<Map<String, String>> verifyTicket(@RequestParam int id, @RequestParam(required = false) boolean redeem){
+		Ticket t = ticketRepository.findById(id);
 
 		if (Objects.isNull(t)){
-			return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, String>>(Map.of("message", "Invalid ticket."), HttpStatus.NOT_FOUND);
 		}
 		if (t.getRedeemed() || t.getRefunded()){
-			return new ResponseEntity<>(false, HttpStatus.OK);
+			return new ResponseEntity<Map<String, String>>(Map.of("message", "Ticket cancelled OR refunded OR used."), HttpStatus.CONFLICT);
 		}
-		return new ResponseEntity<>(true, HttpStatus.OK);
+
+		if (redeem) {
+			return redeemTicket(t);
+		} else {
+			return new ResponseEntity<Map<String, String>>(Map.of("message", "Validated."), HttpStatus.OK);
+		}
 	}
-	
-	@GetMapping("purchase")
-	public ResponseEntity<Ticket> purchaseTicket(){
-		return new ResponseEntity<>(null, HttpStatus.OK);
+
+	private ResponseEntity<Map<String, String>> redeemTicket(Ticket ticket){
+		ticket.setRedeemed(true);
+		ticketRepository.save(ticket);
+		return new ResponseEntity<Map<String, String>>(Map.of("message", "Redeemed."), HttpStatus.OK);
 	}
 }
