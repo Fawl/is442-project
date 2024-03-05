@@ -7,7 +7,6 @@ import { Suspense } from "react";
 async function fetchAllEvents() {
   try {
     const response = await getAllEvents();
-    console.log(response);
     if (!response.ok) {
       <div>Something have went wrong!</div>;
     }
