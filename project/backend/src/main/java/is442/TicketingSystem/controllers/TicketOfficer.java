@@ -93,7 +93,7 @@ public class TicketOfficer extends EventController {
 	}
 
 	private ResponseEntity<Map<String, String>> redeemTicket(Ticket ticket){
-		ticket.setRedeemed(true);
+		ticket.setRedeemed();
 		ticketRepository.save(ticket);
 		return new ResponseEntity<Map<String, String>>(Map.of("message", "Redeemed."), HttpStatus.OK);
 	}

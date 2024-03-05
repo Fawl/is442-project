@@ -39,4 +39,12 @@ public class User {
 
     @Column
     private float balance = 1000;
+
+    public float getBalance() {
+        return this.balance;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
 }

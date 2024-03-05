@@ -78,6 +78,10 @@ public class Ticket {
         this.redeemed = true;
     }
 
+    public LocalDateTime getPurchaseTime() {
+        return this.purchaseTime;
+    }
+
     public String toString() {
         return "ID: " + this.getId() + ", Event ID: " + this.getEvent() + ", Price: " + this.getPrice() + ", purchase time: " + this.getPurchaseTime() + ", bought by: " + this.getBoughtBy() + ", redeemed: " + this.getRedeemed() + ", refunded: " + this.getRefunded();
     }
