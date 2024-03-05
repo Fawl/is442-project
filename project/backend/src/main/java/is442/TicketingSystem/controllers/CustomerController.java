@@ -112,7 +112,7 @@ public class CustomerController {
     }
 
     // OK
-    @GetMapping
+    @GetMapping("/find")
     public ResponseEntity<User> findUser(@RequestParam(required = false) String email, @RequestParam(required = false) Long id) {
         User u = null;
         if (!Objects.isNull(id)) {
