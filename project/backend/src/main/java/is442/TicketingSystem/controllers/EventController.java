@@ -67,9 +67,7 @@ public class EventController {
 	@GetMapping
 	public ResponseEntity<Optional<Event>> getEvent(@RequestParam long id) {
 		Optional<Event> res = eventRepository.findById(id);
-		return new ResponseEntity<Optional<Event>>(res, res.isPresent() ? HttpStatus.FOUND : HttpStatus.GONE);
+		return new ResponseEntity<Optional<Event>>(res, res.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
 }
-
-
