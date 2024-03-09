@@ -14,8 +14,10 @@ import {
 } from "@/components/ui/table";
 
 import { MoreHorizontalIcon } from "lucide-react";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { CancelEventModal } from "../modal/cancel-event-modal";
+import { Button } from "../ui/button";
+import { isMoreThan6MonthsOrLessThan1Day } from "@/lib/utils";
 
 export default function AdminEventTable(eventsData: any) {
   return (
@@ -31,7 +33,7 @@ export default function AdminEventTable(eventsData: any) {
         </TableHeader>
         <TableBody>
           {eventsData.eventsData.map((event: any) => {
-            return <AdminEventTableItem key={event.eventId} event={event} />;
+            return <AdminEventTableItem key={event.id} event={event} />;
           })}
         </TableBody>
       </Table>
@@ -47,12 +49,18 @@ export function AdminEventTableItem({ event }: { event: any }) {
           {event.title}
         </Link>
       </TableCell>
-      <TableCell>123</TableCell>
+      <TableCell>{event.tickets.length}</TableCell>
       <TableCell>
         {!event.cancelled ? (
-          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-            Active
-          </span>
+          isMoreThan6MonthsOrLessThan1Day(event.start) ? (
+            <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              Unavailable
+            </span>
+          ) : (
+            <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+              Active
+            </span>
+          )
         ) : (
           <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
             Cancelled
@@ -66,14 +74,29 @@ export function AdminEventTableItem({ event }: { event: any }) {
               <MoreHorizontalIcon size={16} className="text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
               <Link className="w-full" href={`/event/${event.id}`}>
                 View
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Cancel</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link className="w-full" href={`/edit-event/${event.id}`}>
+                Edit
+              </Link>
+            </DropdownMenuItem>
+            {!event.cancelled && (
+              <DropdownMenuItem asChild>
+                <CancelEventModal
+                  eventId={event.id}
+                  eventName={event.title}
+                  className="py-[6px] px-2 w-full text-red-500 hover:bg-accent cursor-pointer text-sm text-left"
+                >
+                  Cancel
+                </CancelEventModal>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
