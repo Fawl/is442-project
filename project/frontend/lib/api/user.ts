@@ -1,5 +1,29 @@
 import { User } from "@/types";
 
+export async function getAllUser() {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + "/user/all",
+      {
+        method: "GET",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+}
+
 export async function getUserByEmail(email: string) {
   try {
     const response = await fetch(
