@@ -30,6 +30,8 @@ export default async function SpecificEventPage({
 
   // Format the date and time in Singapore Time
   const formattedDate: string = format(singaporeStart, "EEEE, MMMM d");
+  const formattedDateOnly: string = format(singaporeStart, "d");
+  const formattedMonthOnly: string = format(singaporeStart, "MMM");
   const formattedStartTime: string = format(singaporeStart, "h:mm a");
   const formattedEndTime: string = format(singaporeEnd, "h:mm a");
 
@@ -139,9 +141,9 @@ export default async function SpecificEventPage({
             <div className="flex items-center gap-3">
               <div className="flex flex-col items-center justify-center border w-[50px] rounded-md">
                 <span className="text-xs text-center text-muted-foreground font-medium uppercase bg-muted px-2.5 py-1 rounded-t-md w-full">
-                  Jun
+                  {formattedMonthOnly}
                 </span>
-                <span className="py-1">15</span>
+                <span className="py-1">{formattedDateOnly}</span>
               </div>
               <div className="space-y-0.5 tracking-tight">
                 <div className="text-sm text-gray-800 font-medium">
