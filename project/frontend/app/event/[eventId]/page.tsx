@@ -1,10 +1,13 @@
+import { authConfig } from "@/auth";
 import CustomDescription from "@/components/custom-description";
 import PurchaseTicketModal from "@/components/modal/purchase-ticket-modal";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getEventById } from "@/lib/api/event";
+import { isMoreThan6MonthsOrLessThan1Day } from "@/lib/utils";
 import { addHours, format } from "date-fns";
 import { MapPinIcon } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 
 export default async function SpecificEventPage({
@@ -12,12 +15,14 @@ export default async function SpecificEventPage({
 }: {
   params: { eventId: string };
 }) {
+  const session = await getServerSession(authConfig);
+  const userRole = session?.user?.role;
+
   const eventId = params.eventId;
   const event = await getEventById(eventId);
 
   const utcStart = new Date(event.start);
   const utcEnd = new Date(event.end);
-
   // Add 8 hours to convert UTC to Singapore Time (SGT)
   const singaporeTimeOffset = 8;
   const singaporeStart = addHours(utcStart, singaporeTimeOffset);
@@ -81,10 +86,16 @@ export default async function SpecificEventPage({
             <div className="flex items-center justify-between">
               <div className="text-gray-800 font-medium">Pricing</div>
               {event.cancelled && (
-                <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">
                   Cancelled
                 </span>
               )}
+              {isMoreThan6MonthsOrLessThan1Day(event.start) &&
+                event.cancelled === false && (
+                  <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                    Unavailable
+                  </span>
+                )}
             </div>
             <div className="flex items-center justify-between">
               <div className="flex flex-row items-center gap-1.5 line-clamp-1">
@@ -96,13 +107,31 @@ export default async function SpecificEventPage({
                 </span>
               </div>
               <PurchaseTicketModal
+                eventId={eventId}
+                userId={session?.user?.id!}
                 action={
-                  <Button className="font-normal" disabled={event.cancelled}>
+                  <Button
+                    className="font-normal"
+                    // Disable the button if the event is cancelled or
+                    // if the event is more than 6 months away or
+                    // less than 1 day away from the current date or if the user is not a customer
+                    disabled={
+                      event.cancelled ||
+                      isMoreThan6MonthsOrLessThan1Day(event.start) ||
+                      userRole !== "customer"
+                    }
+                  >
                     Book Now
                   </Button>
                 }
               />
             </div>
+            {userRole !== "customer" && (
+              <div className="text-sm p-2 bg-accent/60 text-muted-foreground">
+                As an event manager, you will not be able to book tickets using
+                this account. Please use a customer account to book tickets.
+              </div>
+            )}
           </div>
           <Separator className="my-6" />
           <div className="space-y-4">
