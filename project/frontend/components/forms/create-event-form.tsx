@@ -21,23 +21,49 @@ import { Textarea } from "../ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { format, set } from "date-fns";
+import { addHours, format, parseISO, set } from "date-fns";
 import { createEvent } from "@/lib/api/event";
 import { useRouter } from "next/navigation";
 
-export default function CreateEventForm() {
+const convertISOToTime = (isoString: string) => {
+  // Parse ISO string to Date object
+  const date = parseISO(isoString);
+
+  // Calculate the time difference between the original time zone and Singapore Time
+  const timeDifference = 8;
+
+  // Adjust the time to Singapore Time
+  const sgtDate = addHours(date, timeDifference);
+
+  // Format the date in 24-hour format
+  const formattedSgtTime = format(sgtDate, "HH:mm");
+  return formattedSgtTime;
+};
+
+export default function CreateEventForm({
+  intialValues,
+  type,
+}: {
+  intialValues?: any;
+  type?: string;
+}) {
   const router = useRouter();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const form = useForm<z.infer<typeof CreateEventSchema>>({
     resolver: zodResolver(CreateEventSchema),
     defaultValues: {
-      title: "",
-      venue: "",
+      title: (intialValues != null && intialValues.title) || "",
+      venue: (intialValues != null && intialValues.venue) || "",
       description: "",
-      price: 0,
-      numTickets: 0,
-      cancellationFee: 0,
+      price: (intialValues != null && intialValues.price) || 0,
+      numTickets: (intialValues != null && intialValues.numTickets) || 0,
+      // cancellationFee:
+      //   (intialValues != null && intialValues.cancellationFee) || 0,
+      // // @ts-ignore
+      // startTime: intialValues != null && convertISOToTime(intialValues.start),
+      // // @ts-ignore
+      // endTime: intialValues != null && convertISOToTime(intialValues.end),
     },
   });
 
