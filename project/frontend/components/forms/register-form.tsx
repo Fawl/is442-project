@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { any, z } from "zod";
 import { RegisterFormSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,7 +19,13 @@ import { createUser } from "@/lib/api/user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export default function RegisterForm() {
+export default function RegisterForm({
+  userType = "customer", // DEFAULT VALUE IF NOT PROVIDED
+  isMangerSignUpCallback,
+}: {
+  userType?: "customer" | "ticket_officer" | "event_manager";
+  isMangerSignUpCallback?: () => void;
+}) {
   const router = useRouter();
   const form = useForm<z.infer<typeof RegisterFormSchema>>({
     resolver: zodResolver(RegisterFormSchema),
@@ -30,14 +36,27 @@ export default function RegisterForm() {
   });
 
   const handleOnSubmit = async (data: any) => {
-    // alert(JSON.stringify(data, null, 2));
-    const response = await createUser({
-      email: data.email,
-      password_hash: data.password,
-      user_type: "customer", // REMARKS: CREATE CUSTOMER BY DEFAULT
-    });
-    if (response.ok) {
-      toast.success("User created successfully");
+    try {
+      const response = await createUser({
+        email: data.email,
+        password_hash: data.password,
+        user_type: userType,
+      });
+      if (response.ok) {
+        toast.success("User created successfully");
+        if (userType === "customer") {
+          router.push("/login");
+          router.refresh();
+        } else {
+          // IF USER TYPE IS TICKET OFFICER
+          if (isMangerSignUpCallback) {
+            isMangerSignUpCallback();
+          }
+          router.refresh();
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 

@@ -19,18 +19,18 @@ import java.time.LocalDateTime;
 @RequestMapping("/user")
 public class CustomerController {
 
-	@Autowired
-	private TicketRepository ticketRepository;
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private EventRepository eventRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private EventRepository eventRepository;
 
     // OK
     @GetMapping("/bookings")
-    public ResponseEntity<List<Ticket>> viewBookings(@RequestParam int uid){
+    public ResponseEntity<List<Ticket>> viewBookings(@RequestParam int uid) {
         User u = userRepository.findById(uid);
-        if (Objects.isNull(u)){
+        if (Objects.isNull(u)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         List<Ticket> tl = ticketRepository.findByBoughtBy(u);
@@ -40,19 +40,24 @@ public class CustomerController {
     // OK
     @Transactional
     @DeleteMapping("/ticket/cancel")
-    public ResponseEntity<Map<String, String>> cancelTicket(@RequestParam int ticket_id){
+    public ResponseEntity<Map<String, String>> cancelTicket(@RequestParam int ticket_id) {
         Ticket t = ticketRepository.findById(ticket_id);
 
-        if (Objects.isNull(t)){
-            return new ResponseEntity<Map<String, String>>(Map.of("message", "No ticket found matching ID."), HttpStatus.NOT_FOUND);
+        if (Objects.isNull(t)) {
+            return new ResponseEntity<Map<String, String>>(Map.of("message", "No ticket found matching ID."),
+                    HttpStatus.NOT_FOUND);
         }
 
-        if (LocalDateTime.now().isAfter(t.getEvent().getStartTime().minusDays(2))){
-            return new ResponseEntity<Map<String, String>>(Map.of("message", "Unable to cancel. Reason: T&C Breached (Event will start in 48 hrs)"), HttpStatus.BAD_REQUEST);
+        if (LocalDateTime.now().isAfter(t.getEvent().getStartTime().minusDays(2))) {
+            return new ResponseEntity<Map<String, String>>(
+                    Map.of("message", "Unable to cancel. Reason: T&C Breached (Event will start in 48 hrs)"),
+                    HttpStatus.BAD_REQUEST);
         }
 
-        if (t.getRefunded() || t.getRedeemed()){
-            return new ResponseEntity<Map<String, String>>(Map.of("message", "Unable to cancel. Reason: Ticket has been used OR refunded before"), HttpStatus.CONFLICT);
+        if (t.getRefunded() || t.getRedeemed()) {
+            return new ResponseEntity<Map<String, String>>(
+                    Map.of("message", "Unable to cancel. Reason: Ticket has been used OR refunded before"),
+                    HttpStatus.CONFLICT);
         }
 
         Event e = t.getEvent();
@@ -70,37 +75,40 @@ public class CustomerController {
     // TODO: CHECK FIRST IF 4 TICKETS HAVE BEEN PURCHASED TO THE SAME EVENT
     @Transactional
     @PostMapping("/purchase")
-    public ResponseEntity<List<Ticket>> purchaseTicket(@RequestParam int event_id, @RequestParam int user_id, @RequestParam(required = false) Integer qty) {
+    public ResponseEntity<List<Ticket>> purchaseTicket(@RequestParam int event_id, @RequestParam int user_id,
+            @RequestParam(required = false) Integer qty) {
         qty = Objects.isNull(qty) ? 1 : qty;
         
         Event e = eventRepository.findById(event_id);
         User u = userRepository.findById(user_id);
-        if (Objects.isNull(u) || Objects.isNull(e)){
+        if (Objects.isNull(u) || Objects.isNull(e)) {
             return ResponseEntity.notFound().build();
         }
         List<Ticket> tl = ticketRepository.findByEventIdAndBoughtBy(event_id , u);
         if (tl.size() + qty > 4){
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
-        if (u.getBalance()<e.getPrice() * qty){
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+
+        if (u.getBalance() < e.getPrice() * qty) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
 
         ArrayList<Ticket> allCreated = new ArrayList<Ticket>();
 
-        for (int i=qty; i>0;i--){
+        for (int i = qty; i > 0; i--) {
             Ticket created = new Ticket();
             created.setBoughtBy(u);
             created.setEvent(e);
             created.setPrice(e.getPrice());
             created.setPurchaseTime(LocalDateTime.now());
             allCreated.add(ticketRepository.save(created));
-            // ticketRepository.createTicket(e.getId(), u.getId(), e.getPrice(), false, false, LocalDateTime.now());
+            // ticketRepository.createTicket(e.getId(), u.getId(), e.getPrice(), false,
+            // false, LocalDateTime.now());
         }
 
         u.setBalance(u.getBalance() - e.getPrice() * qty);
         userRepository.save(u);
-        e.setNumTickets(e.getNumTickets()-qty);
+        e.setNumTickets(e.getNumTickets() - qty);
         eventRepository.save(e);
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(allCreated);
     }
@@ -108,7 +116,7 @@ public class CustomerController {
     // OK
     @GetMapping("/all")
     public ResponseEntity<List<User>> findAll() {
-        try{
+        try {
             return new ResponseEntity<List<User>>(userRepository.findAll(), HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
@@ -117,23 +125,23 @@ public class CustomerController {
 
     // OK
     @GetMapping("/find")
-    public ResponseEntity<User> findUser(@RequestParam(required = false) String email, @RequestParam(required = false) Long id) {
+    public ResponseEntity<User> findUser(@RequestParam(required = false) String email,
+            @RequestParam(required = false) Long id) {
         User u = null;
         if (!Objects.isNull(id)) {
             u = userRepository.findById(id).get();
         } else if (!Objects.isNull(email)) {
-            u = userRepository.findByEmail(email);
+            u = userRepository.findFirstByEmail(email);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: No Email or ID provided.");
-            
         }
 
-        try{
-            if (Objects.isNull(u)){
+        try {
+            if (Objects.isNull(u)) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(u, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
         }
     }
@@ -143,8 +151,7 @@ public class CustomerController {
     @PostMapping("/new")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
-            System.out.println(user.getPassword_hash());
-            if (Objects.isNull(userRepository.findByEmail(user.getEmail()))) {
+            if (Objects.isNull(userRepository.findFirstByEmail(user.getEmail()))) {
                 return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
@@ -154,16 +161,15 @@ public class CustomerController {
         }
     }
 
-
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody UpdateUserRequest request) {
         try {
 
-            User u = userRepository.findByEmail(request.getEmailBefore());
+            User u = userRepository.findFirstByEmail(request.getEmailBefore());
 
             if (Objects.isNull(u)) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            } else if (!Objects.isNull(userRepository.findByEmail(request.getEmailAfter()))) {
+            } else if (!Objects.isNull(userRepository.findFirstByEmail(request.getEmailAfter()))) {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             } else {
                 if (!Objects.isNull(request.getEmailAfter()) && !request.getEmailAfter().equals("")) {
@@ -176,7 +182,7 @@ public class CustomerController {
                     u.setUser_type(request.getUser_type());
                 }
                 return new ResponseEntity<>(userRepository.save(u), HttpStatus.OK);
-            
+
             }
 
         } catch (Exception e) {
@@ -187,20 +193,21 @@ public class CustomerController {
     @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUser(@RequestParam String email) {
-        try{
+        try {
             String status = userRepository.deleteByEmail(email);
-            if (status.equals("0")){
+            if (status.equals("0")) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(null, HttpStatus.OK);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
         }
     }
 
     @GetMapping("/tickets")
     public ResponseEntity<List<Ticket>> getMethodName(@RequestParam Long user_id) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ticketRepository.findByBoughtBy(user_id));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(ticketRepository.findByBoughtBy(user_id));
     }
 
 }
