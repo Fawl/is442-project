@@ -46,3 +46,14 @@ export async function getTicketPurchaseByEventIdANDUserId(payload: any) {
     throw error;
   }
 }
+
+export async function generateTicket(payload:any){
+  const {eventId} = payload;
+
+  try {
+    const response = await fetch (process.env.NEXT_PUBLIC_BACKEND + `/user`)
+  } catch (error) {
+    console.error("error issuing ticket:", error);
+    throw error;
+  }
+}

@@ -72,3 +72,26 @@ export async function createUser(user: User) {
     throw error;
   }
 }
+
+export async function createUserByEmail(email:string){
+  try{
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + "/user/new",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password_hash: "temppassword",
+          user_type: "customer",
+        }),
+      }
+    )
+    return response
+  }catch(error){
+    console.error("Error creating customer account:",error);
+    throw error;
+  }
+}

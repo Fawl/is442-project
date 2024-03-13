@@ -1,5 +1,6 @@
 import { authConfig } from "@/auth";
 import CustomDescription from "@/components/custom-description";
+import BookTicketButton from "@/components/modal/book-ticket-modal";
 import PurchaseTicketModal from "@/components/modal/purchase-ticket-modal";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -108,7 +109,12 @@ export default async function SpecificEventPage({
                   /ticket
                 </span>
               </div>
-              <PurchaseTicketModal
+              {userRole=="ticket_officer" && (<BookTicketButton
+              eventId={eventId}
+              />)
+              }
+
+              {userRole!=="event_manager" && userRole!=="ticket_officer" && (<PurchaseTicketModal
                 eventId={eventId}
                 userId={session?.user?.id!}
                 action={
@@ -119,16 +125,17 @@ export default async function SpecificEventPage({
                     // less than 1 day away from the current date or if the user is not a customer
                     disabled={
                       event.cancelled ||
-                      isMoreThan6MonthsOrLessThan1Day(event.start) ||
+                      isMoreThan6MonthsOrLessThan1Day(utcStart) ||
                       userRole !== "customer"
                     }
                   >
                     Book Now
                   </Button>
                 }
-              />
+              />)}
+              
             </div>
-            {userRole !== "customer" && (
+            {userRole == "event_manager" && (
               <div className="text-sm p-2 bg-accent/60 text-muted-foreground">
                 As an event manager, you will not be able to book tickets using
                 this account. Please use a customer account to book tickets.
