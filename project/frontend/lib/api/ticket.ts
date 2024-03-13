@@ -1,3 +1,7 @@
+import { toast } from "sonner";
+import { getUserByEmail } from "./user";
+import { createUser } from "./user";
+
 export async function purchaseTicketByEventIdANDUserId(payload: any) {
   const { eventId, userId, ticketQuantity } = payload;
 
@@ -47,13 +51,44 @@ export async function getTicketPurchaseByEventIdANDUserId(payload: any) {
   }
 }
 
-export async function generateTicket(payload:any){
-  const {eventId} = payload;
 
-  try {
-    const response = await fetch (process.env.NEXT_PUBLIC_BACKEND + `/user`)
-  } catch (error) {
-    console.error("error issuing ticket:", error);
-    throw error;
+
+export async function issueTicketByTicketOfficer(payload: any) {
+  const { eventId, email,ticketQuantity } = payload;
+
+  // GET USER BY EMAIL
+  const user = await fetch(
+    process.env.NEXT_PUBLIC_BACKEND + `/user/find?email=${email}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  // USER DON'T EXIST
+  if (user.status === 404) {
+    const newUser = await createUser({
+      email: email,
+      password_hash: "password",
+      user_type: "customer",
+    });
+    
   }
+
+  const customer = await getUserByEmail(email);
+  console.log(customer)
+  console.log(customer.id)
+  const userId = customer.id;
+  try {
+    const ticket = await purchaseTicketByEventIdANDUserId({eventId,userId,ticketQuantity})
+  if(ticket){
+    return ticket;
+  }
+  } catch (error) {
+    toast.error("Failed to issue ticket");
+  }
+  
+  
 }
