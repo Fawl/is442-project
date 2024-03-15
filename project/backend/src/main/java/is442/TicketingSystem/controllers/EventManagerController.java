@@ -27,6 +27,8 @@ public class EventManagerController extends EventController {
 	private UserRepository userRepository;
 	@Autowired
 	private TicketRepository ticketRepository;
+	@Autowired
+	private EventManagerRepository eventManagerRepository;
 
 	@Transactional
 	@GetMapping("/cancel")
@@ -44,9 +46,9 @@ public class EventManagerController extends EventController {
 
 		List<Ticket> tl = ticketRepository.findByEventId(id);
 		for (Ticket ticket : tl){
-			User u = ticket.getBoughtBy();
-			u.setBalance(u.getBalance() + ticket.getPrice());
-			userRepository.save(u);
+			Customer c = ticket.getBoughtBy();
+			c.setBalance(c.getBalance() + ticket.getPrice());
+			userRepository.save(c);
 			ticket.setRefunded(true);
 			ticketRepository.save(ticket);
 		}
@@ -115,6 +117,12 @@ public class EventManagerController extends EventController {
 		e.setCancellationFee(fee);
 		
 		return new ResponseEntity<>(eventRepository.save(e), HttpStatus.OK);
+	}
+
+	@GetMapping("/eventstest") // Simple test to get all events created by a manager
+	public ResponseEntity<List<Event>> getEvents(@RequestParam int emid){
+		EventManager em = eventManagerRepository.findById(emid);
+		return new ResponseEntity<>(em.getEvents(), HttpStatus.OK);
 	}
 }
 

@@ -1,13 +1,6 @@
 package is442.TicketingSystem.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -19,6 +12,8 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "user_table")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
     @Id
@@ -33,18 +28,7 @@ public class User {
     private String password_hash;
 
     @Enumerated(EnumType.STRING) // Use EnumType.STRING to store enum names as strings
-    @Column
+    @Column(insertable=false, updatable=false)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private UserType user_type;
-
-    @Column
-    private float balance = 1000;
-
-    public float getBalance() {
-        return this.balance;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
 }

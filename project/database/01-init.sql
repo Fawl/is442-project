@@ -15,7 +15,7 @@ CREATE TABLE "user_table" (
   "email" varchar(255) UNIQUE NOT NULL,
   "password_hash" varchar(32) NOT NULL,
   "user_type" usertype NOT NULL,
-  "balance" float NOT NULL DEFAULT 1000
+  "balance" float
 );
 
 CREATE TABLE "ticketedevent" (

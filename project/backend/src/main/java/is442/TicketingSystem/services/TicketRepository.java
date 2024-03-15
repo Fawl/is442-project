@@ -1,7 +1,7 @@
 package is442.TicketingSystem.services;
 
 import is442.TicketingSystem.models.Event;
-import is442.TicketingSystem.models.User;
+import is442.TicketingSystem.models.Customer;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
@@ -21,9 +21,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 	// Refer to https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
 	List<Ticket> findByEvent(Event event);
 	List<Ticket> findByEventId(int eid);
-	List<Ticket> findByBoughtBy(User u);
+	List<Ticket> findByBoughtBy(Customer c);
 	Ticket findById(int id);
-	List<Ticket> findByEventIdAndBoughtBy(int eid, User u);
+	List<Ticket> findByEventIdAndBoughtBy(int eid, Customer c);
 
 	@Query(value = "SELECT * FROM \"ticket\" WHERE bought_by = :id", nativeQuery = true)
 	List<Ticket> findByBoughtBy(@Param("id") Long user_id);

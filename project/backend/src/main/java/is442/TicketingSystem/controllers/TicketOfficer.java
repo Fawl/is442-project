@@ -3,12 +3,8 @@ package is442.TicketingSystem.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import is442.TicketingSystem.models.Event;
-import is442.TicketingSystem.models.Ticket;
-import is442.TicketingSystem.models.User;
-import is442.TicketingSystem.services.EventRepository;
-import is442.TicketingSystem.services.TicketRepository;
-import is442.TicketingSystem.services.UserRepository;
+import is442.TicketingSystem.models.*;
+import is442.TicketingSystem.services.*;
 import is442.TicketingSystem.utils.*;
 import jakarta.transaction.Transactional;
 
@@ -36,6 +32,8 @@ public class TicketOfficer extends EventController {
 	private TicketRepository ticketRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+    private CustomerRepository customerRepository;
 
 	/**
 	 * Creates a Ticket object. purchase_time has to be in the format of
@@ -57,16 +55,16 @@ public class TicketOfficer extends EventController {
 			LocalDateTime.now()
 		);
 
-		User user = userRepository.findById(ticket.getUser_id()).get();
-		user.setBalance(user.getBalance() - ticket.getPrice());
-		userRepository.save(user);
+		Customer c = (Customer) customerRepository.findById(ticket.getUser_id()).get();
+		c.setBalance(c.getBalance() - ticket.getPrice());
+		userRepository.save(c);
 
 		Event event = eventRepository.findById(ticket.getEvent_id()).get();
 		event.decrementTickets();
 		eventRepository.save(event);
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-		.body(Map.of("message", String.format("Success. New Balance for %s: $%.2f", user.getEmail(), user.getBalance())));
+		.body(Map.of("message", String.format("Success. New Balance for %s: $%.2f", c.getEmail(), c.getBalance())));
 	}
 
 	@GetMapping("/user")

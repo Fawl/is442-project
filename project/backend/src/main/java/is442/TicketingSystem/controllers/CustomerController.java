@@ -25,15 +25,17 @@ public class CustomerController {
     private UserRepository userRepository;
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     // OK
     @GetMapping("/bookings")
     public ResponseEntity<List<Ticket>> viewBookings(@RequestParam int uid) {
-        User u = userRepository.findById(uid);
-        if (Objects.isNull(u)) {
+        Customer c = customerRepository.findById(uid);
+        if (Objects.isNull(c)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        List<Ticket> tl = ticketRepository.findByBoughtBy(u);
+        List<Ticket> tl = ticketRepository.findByBoughtBy(c);
         return new ResponseEntity<>(tl, HttpStatus.OK);
     }
 
@@ -61,12 +63,12 @@ public class CustomerController {
         }
 
         Event e = t.getEvent();
-        User u = t.getBoughtBy();
-        u.setBalance(u.getBalance() + t.getPrice() - e.getCancellationFee());
+        Customer c = t.getBoughtBy();
+        c.setBalance(c.getBalance() + t.getPrice() - e.getCancellationFee());
         e.setNumTickets(e.getNumTickets() + 1);
         t.setRefunded(true);
 
-        userRepository.save(u);
+        userRepository.save(c);
         eventRepository.save(e);
         ticketRepository.save(t);
         return new ResponseEntity<Map<String, String>>(Map.of("message", "Cancelled ticket"), HttpStatus.OK);
@@ -80,16 +82,16 @@ public class CustomerController {
         qty = Objects.isNull(qty) ? 1 : qty;
         
         Event e = eventRepository.findById(event_id);
-        User u = userRepository.findById(user_id);
-        if (Objects.isNull(u) || Objects.isNull(e)) {
+        Customer c = customerRepository.findById(user_id);
+        if (Objects.isNull(c) || Objects.isNull(e)) {
             return ResponseEntity.notFound().build();
         }
-        List<Ticket> tl = ticketRepository.findByEventIdAndBoughtBy(event_id , u);
-        if (tl.size() + qty > 4){
+        List<Ticket> tl = ticketRepository.findByEventIdAndBoughtBy(event_id , c);
+        if (tl.size() + qty > 5){
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (u.getBalance() < e.getPrice() * qty) {
+        if (c.getBalance() < e.getPrice() * qty) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
 
@@ -97,7 +99,7 @@ public class CustomerController {
 
         for (int i = qty; i > 0; i--) {
             Ticket created = new Ticket();
-            created.setBoughtBy(u);
+            created.setBoughtBy(c);
             created.setEvent(e);
             created.setPrice(e.getPrice());
             created.setPurchaseTime(LocalDateTime.now());
@@ -106,8 +108,8 @@ public class CustomerController {
             // false, LocalDateTime.now());
         }
 
-        u.setBalance(u.getBalance() - e.getPrice() * qty);
-        userRepository.save(u);
+        c.setBalance(c.getBalance() - e.getPrice() * qty);
+        userRepository.save(c);
         e.setNumTickets(e.getNumTickets() - qty);
         eventRepository.save(e);
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(allCreated);
