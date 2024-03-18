@@ -1,5 +1,4 @@
 import RegisterForm from "@/components/forms/register-form";
-import { buttonVariants } from "@/components/ui/button";
 import { DEFAULT_ROUTES } from "@/lib/routes";
 import Link from "next/link";
 

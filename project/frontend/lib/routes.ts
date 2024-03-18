@@ -3,6 +3,7 @@ export const DEFAULT_ROUTES = {
   LOGIN: "/login",
   SIGNUP: "/register",
   CREATE_EVENT: "/create",
+  TICKET_OFFICER: "/ticket-officer",
   EXPLORE: "/explore",
   DASHBOARD: "/dashboard",
   MY_EVENTS: "/my-events",

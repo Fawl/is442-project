@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { LoginFormSchema } from "./schemas";
-import { getUserByEmail } from "./actions/user.action";
+import { getUserByEmail } from "./lib/api/user";
 
 export const authConfig: NextAuthOptions = {
   providers: [
@@ -16,7 +16,7 @@ export const authConfig: NextAuthOptions = {
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
           const user = await getUserByEmail(email);
-
+          console.log("user", user);
           if (!user || !user.password_hash)
             throw new Error("User with that email does not exist!");
           const passwordsMatch = password === user.password_hash;

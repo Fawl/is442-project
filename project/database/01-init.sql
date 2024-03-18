@@ -13,9 +13,9 @@ CREATE TABLE "tags" (
 CREATE TABLE "user_table" (
   "id" serial PRIMARY KEY,
   "email" varchar(255) UNIQUE NOT NULL,
-  "password_hash" char(32) NOT NULL,
+  "password_hash" varchar(32) NOT NULL,
   "user_type" usertype NOT NULL,
-  "balance" float NOT NULL DEFAULT 1000
+  "balance" float
 );
 
 CREATE TABLE "ticketedevent" (
@@ -53,6 +53,11 @@ CREATE TABLE "event_can_manage" (
   "event_id" integer NOT NULL
 );
 
+CREATE TABLE "ticket_officer_event_manager" (
+  "ticket_officer_id" integer NOT NULL,
+  "event_manager_id" integer NOT NULL
+);
+
 -- Table to map event manager to event created
 -- Table to give permissions to ticket officer to modify events
 
@@ -69,3 +74,7 @@ ALTER TABLE "eventtags" ADD CONSTRAINT "tag_eventtags_fk" FOREIGN KEY ("tag_id")
 ALTER TABLE "event_can_manage" ADD CONSTRAINT "event_user_fk" FOREIGN KEY ("user_id") REFERENCES "user_table" ("id");
 
 ALTER TABLE "event_can_manage" ADD CONSTRAINT "event_event_fk" FOREIGN KEY ("event_id") REFERENCES "ticketedevent" ("id");
+
+ALTER TABLE "ticket_officer_event_manager" ADD CONSTRAINT "ticket_officer_user_fk" FOREIGN KEY ("ticket_officer_id") REFERENCES "user_table" ("id");
+
+ALTER TABLE "ticket_officer_event_manager" ADD CONSTRAINT "event_manager_user_fk" FOREIGN KEY ("event_manager_id") REFERENCES "user_table" ("id");

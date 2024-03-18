@@ -1,6 +1,11 @@
 "use client";
 import { DEFAULT_ROUTES } from "@/lib/routes";
-import { LayoutDashboardIcon, TicketIcon } from "lucide-react";
+import {
+  LayoutDashboardIcon,
+  TicketIcon,
+  User2Icon,
+  Users2Icon,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,18 +33,33 @@ export default function NavItems() {
       )}
 
       {userRole === "event_manager" && (
-        <li>
-          <Link
-            href={DEFAULT_ROUTES.CREATE_EVENT}
-            className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
-              pathname === DEFAULT_ROUTES.CREATE_EVENT &&
-              "text-primary font-medium"
-            }`}
-          >
-            <TicketIcon className="mr-1.5" size={16} />
-            <span>Create Event</span>
-          </Link>
-        </li>
+        <>
+          <li>
+            <Link
+              href={DEFAULT_ROUTES.CREATE_EVENT}
+              className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
+                pathname === DEFAULT_ROUTES.CREATE_EVENT &&
+                "text-primary font-medium"
+              }`}
+            >
+              <TicketIcon className="mr-1.5" size={16} />
+              <span>Create Event</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              href={DEFAULT_ROUTES.TICKET_OFFICER}
+              className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
+                pathname === DEFAULT_ROUTES.TICKET_OFFICER &&
+                "text-primary font-medium"
+              }`}
+            >
+              <Users2Icon className="mr-1.5" size={16} />
+              <span>Manage Ticket Officer</span>
+            </Link>
+          </li>
+        </>
       )}
 
       {userRole === "customer" && (

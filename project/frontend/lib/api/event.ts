@@ -4,6 +4,7 @@ export async function getAllEvents() {
       process.env.NEXT_PUBLIC_BACKEND + "/event/all",
       {
         method: "GET",
+        cache: "no-cache",
       }
     );
 
@@ -24,6 +25,7 @@ export async function getEventById(id: string) {
       process.env.NEXT_PUBLIC_BACKEND + `/event?id=${id}`,
       {
         method: "GET",
+        cache: "no-cache",
       }
     );
     if (!response.ok) {
@@ -39,7 +41,8 @@ export async function getEventById(id: string) {
 export async function createEvent(payload: any) {
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND + `/event/new?user_id=${payload.user_id}`,
+      process.env.NEXT_PUBLIC_BACKEND +
+        `/manager/event/new?user_id=${payload.user_id}`,
       {
         method: "POST",
         headers: {
@@ -54,6 +57,29 @@ export async function createEvent(payload: any) {
     return response.json();
   } catch (error) {
     console.error("Error creating event:", error);
+    throw error;
+  }
+}
+
+export async function cancelEventById(payload: any) {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND +
+        `/manager/event/cancel?id=${payload.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error updating event:", error);
     throw error;
   }
 }

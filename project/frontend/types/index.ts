@@ -9,3 +9,9 @@ export type TicketedEvent = {
   start: Date;
   end: Date;
 };
+
+export type User = {
+  email: string;
+  password_hash: string;
+  user_type: string;
+};
