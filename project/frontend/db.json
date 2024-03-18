@@ -1,0 +1,87 @@
+{
+    "events":
+    [
+      {
+        "Rock Concert": 
+        {
+          "id": 1,
+          "venue": "Madison Square Garden",
+          "desc": null,
+          "price": 100,
+          "cancellation_fee": 0,
+          "num_tickets": 1000,
+          "cancelled": "false",
+          "start_time": "2024-06-01 19:00:00",
+          "end_time": "2024-06-01 22:00:00",
+          "image_link": "https://images.unsplash.com/photo-1619229666372-3c26c399a4cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NjY5NTJ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MDc4OTIwMTB8&ixlib=rb-4.0.3&q=80&w=1080",
+          "created_by": 4
+        }
+      },
+      {
+        "Classical Music Performance": 
+        {
+          "id": 4,
+          "venue": "Symphony Hall",
+          "desc": null,
+          "price": 300,
+          "cancellation_fee": 0,
+          "num_tickets": 300,
+          "cancelled": "false",
+          "start_time": "2024-09-10 20:00:00",
+          "end_time": "2024-09-10 22:30:00",
+          "image_link": "https://images.unsplash.com/photo-1465661910194-fd1393a57d24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NjY5NTJ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MDc5MDQxMTB8&ixlib=rb-4.0.3&q=80&w=1080",
+          "created_by": 4
+        }
+      },
+      {
+        "Art Exhibition": 
+        {
+          "id": 3,
+          "venue": "National Gallery",
+          "desc": null,
+          "price": 300,
+          "cancellation_fee": 0,
+          "num_tickets": 200,
+          "cancelled": "true",
+          "start_time": "2024-08-20 10:00:00",
+          "end_time": "2024-08-20 20:00:00",
+          "image_link": "https://images.unsplash.com/photo-1630416920377-e43f0f9dd28d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NjY5NTJ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MDc5MDMzNzR8&ixlib=rb-4.0.3&q=80&w=1080",
+          "created_by": 5
+        }
+      },
+      {
+        "Film Festival": 
+        {
+          "id": 5,
+          "title": "Film Festival",
+          "venue": "Downtown Cinema",
+          "desc": null,
+          "price": 400,
+          "cancellation_fee": 0,
+          "num_tickets": 400,
+          "cancelled": "false",
+          "start_time": "2024-10-05 12:00:00",
+          "end_time": "2024-10-05 23:00:00",
+          "image_link": "https://images.unsplash.com/photo-1605610492209-ddaae3432fad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NjY5NTJ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MDc5MDMzOTh8&ixlib=rb-4.0.3&q=80&w=1080",
+          "created_by": 5
+        }
+      },
+      {
+        "Tech Conference": 
+        {
+          "id": 2,
+          "venue": "Convention Center",
+          "desc": null,
+          "price": 200,
+          "cancellation_fee": 0,
+          "num_tickets": 500,
+          "cancelled": "false",
+          "start_time": "2024-07-15 09:00:00",
+          "end_time": "2024-07-15 17:00:00",
+          "image_link": "https://images.unsplash.com/photo-1599592187465-6dc742367282?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NjY5NTJ8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MDc4OTE1MjB8&ixlib=rb-4.0.3&q=80&w=1080",
+          "created_by": 5
+        }
+      }
+    ]
+  }
+  
