@@ -11,7 +11,6 @@ export async function getAllEvents() {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
     return response.json();
   } catch (error) {
     console.error("Error fetching events:", error);
@@ -57,6 +56,29 @@ export async function createEvent(payload: any) {
     return response.json();
   } catch (error) {
     console.error("Error creating event:", error);
+    throw error;
+  }
+}
+
+export async function updateEventById(payload: any) {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND +
+        `/manager/event/update?id=${payload.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error updating event:", error);
     throw error;
   }
 }

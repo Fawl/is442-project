@@ -5,9 +5,15 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 // COMPONENTS
-import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import { createEvent, updateEventById } from "@/lib/api/event";
+import { cn, convertISOToSingaporeTime } from "@/lib/utils";
+import { format, set } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
 import {
   Form,
   FormControl,
@@ -17,37 +23,18 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Calendar } from "../ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { addHours, format, parseISO, set } from "date-fns";
-import { createEvent } from "@/lib/api/event";
-import { useRouter } from "next/navigation";
-
-const convertISOToTime = (isoString: string) => {
-  // Parse ISO string to Date object
-  const date = parseISO(isoString);
-
-  // Calculate the time difference between the original time zone and Singapore Time
-  const timeDifference = 8;
-
-  // Adjust the time to Singapore Time
-  const sgtDate = addHours(date, timeDifference);
-
-  // Format the date in 24-hour format
-  const formattedSgtTime = format(sgtDate, "HH:mm");
-  return formattedSgtTime;
-};
+import { Textarea } from "../ui/textarea";
 
 export default function CreateEventForm({
   intialValues,
-  type,
+  type = "create",
 }: {
   intialValues?: any;
   type?: string;
 }) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const form = useForm<z.infer<typeof CreateEventSchema>>({
@@ -58,12 +45,16 @@ export default function CreateEventForm({
       description: "",
       price: (intialValues != null && intialValues.price) || 0,
       numTickets: (intialValues != null && intialValues.numTickets) || 0,
-      // cancellationFee:
-      //   (intialValues != null && intialValues.cancellationFee) || 0,
-      // // @ts-ignore
-      // startTime: intialValues != null && convertISOToTime(intialValues.start),
-      // // @ts-ignore
-      // endTime: intialValues != null && convertISOToTime(intialValues.end),
+      cancellationFee:
+        (intialValues != null && intialValues.cancellationFee) || 0,
+      startTime:
+        (intialValues != null &&
+          convertISOToSingaporeTime(intialValues.startTime)) ||
+        "",
+      endTime:
+        (intialValues != null &&
+          convertISOToSingaporeTime(intialValues.endTime)) ||
+        "",
     },
   });
 
@@ -93,12 +84,35 @@ export default function CreateEventForm({
       price: values.price,
       numTickets: values.numTickets,
       cancellationFee: values.cancellationFee,
-      user_id: "2", // TODO: Replace with actual user ID
+      user_id: session?.user?.id,
     };
 
-    // alert(JSON.stringify(payload, null, 2));
+    if (type === "create") {
+      handleCreateEvent(payload);
+    } else if (type === "edit") {
+      handleEditEvent(payload);
+    }
+  };
+
+  const handleCreateEvent = async (payload: any) => {
     try {
       const response = await createEvent(payload);
+      if (response) {
+        router.push(`/`);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Error creating event:", error);
+      throw error;
+    }
+  };
+
+  const handleEditEvent = async (payload: any) => {
+    try {
+      const response = await updateEventById({
+        ...payload,
+        id: intialValues.id,
+      });
       if (response) {
         router.push(`/`);
         router.refresh();
@@ -294,6 +308,7 @@ export default function CreateEventForm({
                     selected={field.value}
                     onSelect={(e) => {
                       field.onChange(e);
+                      console.log(e);
                       form.setValue("endDate", form.getValues("startDate")); // Set end date to start date
                       setIsCalendarOpen(false);
                     }}
@@ -356,7 +371,7 @@ export default function CreateEventForm({
         </div>
 
         <Button type="submit" className="w-full">
-          Create Event
+          {type === "create" ? "Create Event" : "Update Event"}
         </Button>
       </form>
     </Form>

@@ -1,6 +1,5 @@
 import { toast } from "sonner";
-import { getUserByEmail } from "./user";
-import { createUser } from "./user";
+import { createUser, getUserByEmail } from "./user";
 
 export async function purchaseTicketByEventIdANDUserId(payload: any) {
   const { eventId, userId, ticketQuantity } = payload;
@@ -18,6 +17,7 @@ export async function purchaseTicketByEventIdANDUserId(payload: any) {
       }
     );
     if (!response.ok) {
+      console.log(response);
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     return response.json();
@@ -51,10 +51,8 @@ export async function getTicketPurchaseByEventIdANDUserId(payload: any) {
   }
 }
 
-
-
 export async function issueTicketByTicketOfficer(payload: any) {
-  const { eventId, email,ticketQuantity } = payload;
+  const { eventId, email, ticketQuantity } = payload;
 
   // GET USER BY EMAIL
   const user = await fetch(
@@ -74,21 +72,22 @@ export async function issueTicketByTicketOfficer(payload: any) {
       password_hash: "password",
       user_type: "customer",
     });
-    
   }
 
   const customer = await getUserByEmail(email);
-  console.log(customer)
-  console.log(customer.id)
+  console.log(customer);
+  console.log(customer.id);
   const userId = customer.id;
   try {
-    const ticket = await purchaseTicketByEventIdANDUserId({eventId,userId,ticketQuantity})
-  if(ticket){
-    return ticket;
-  }
+    const ticket = await purchaseTicketByEventIdANDUserId({
+      eventId,
+      userId,
+      ticketQuantity,
+    });
+    if (ticket) {
+      return ticket;
+    }
   } catch (error) {
     toast.error("Failed to issue ticket");
   }
-  
-  
 }

@@ -2,14 +2,15 @@ import { authConfig } from "@/auth";
 import CustomDescription from "@/components/custom-description";
 import BookTicketButton from "@/components/modal/book-ticket-modal";
 import PurchaseTicketModal from "@/components/modal/purchase-ticket-modal";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getEventById } from "@/lib/api/event";
-import { isMoreThan6MonthsOrLessThan1Day } from "@/lib/utils";
+import { cn, isMoreThan6MonthsOrLessThan1Day } from "@/lib/utils";
 import { addHours, format } from "date-fns";
 import { MapPinIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function SpecificEventPage({
   params,
@@ -30,7 +31,7 @@ export default async function SpecificEventPage({
   const singaporeEnd = addHours(utcEnd, singaporeTimeOffset);
 
   // Format the date and time in Singapore Time
-  const formattedDate: string = format(singaporeStart, "EEEE, MMMM d");
+  const formattedDate: string = format(singaporeStart, "EEEE, MMMM d yyyy");
   const formattedDateOnly: string = format(singaporeStart, "d");
   const formattedMonthOnly: string = format(singaporeStart, "MMM");
   const formattedStartTime: string = format(singaporeStart, "h:mm a");
@@ -109,31 +110,52 @@ export default async function SpecificEventPage({
                   /ticket
                 </span>
               </div>
-              {userRole=="ticket_officer" && (<BookTicketButton
-              eventId={eventId}
-              />)
-              }
+              {userRole == "ticket_officer" && (
+                <BookTicketButton eventId={eventId} />
+              )}
 
-              {userRole!=="event_manager" && userRole!=="ticket_officer" && (<PurchaseTicketModal
-                eventId={eventId}
-                userId={session?.user?.id!}
-                action={
-                  <Button
-                    className="font-normal"
-                    // Disable the button if the event is cancelled or
-                    // if the event is more than 6 months away or
-                    // less than 1 day away from the current date or if the user is not a customer
-                    disabled={
-                      event.cancelled ||
-                      isMoreThan6MonthsOrLessThan1Day(utcStart) ||
-                      userRole !== "customer"
-                    }
-                  >
-                    Book Now
-                  </Button>
-                }
-              />)}
-              
+              {session !== null ? (
+                <>
+                  {userRole == "customer" && (
+                    <PurchaseTicketModal
+                      eventId={eventId}
+                      userId={session?.user?.id!}
+                      action={
+                        <Button
+                          className="font-normal"
+                          // Disable the button if the event is cancelled or
+                          // if the event is more than 6 months away or
+                          // less than 1 day away from the current date or if the user is not a customer
+                          disabled={
+                            event.cancelled ||
+                            isMoreThan6MonthsOrLessThan1Day(utcStart)
+                          }
+                        >
+                          Book Now
+                        </Button>
+                      }
+                    />
+                  )}
+                </>
+              ) : (
+                <Link
+                  href={
+                    event.cancelled || isMoreThan6MonthsOrLessThan1Day(utcStart)
+                      ? "#"
+                      : `/login?callbackUrl=/event/${eventId}`
+                  }
+                  className={cn(
+                    buttonVariants({ variant: "default" }),
+                    `font-normal ${
+                      (event.cancelled ||
+                        isMoreThan6MonthsOrLessThan1Day(utcStart)) &&
+                      "cursor-not-allowed opacity-50"
+                    }`
+                  )}
+                >
+                  Book Now
+                </Link>
+              )}
             </div>
             {userRole == "event_manager" && (
               <div className="text-sm p-2 bg-accent/60 text-muted-foreground">

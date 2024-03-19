@@ -10,6 +10,23 @@ export type TicketedEvent = {
   end: Date;
 };
 
+export type Event = {
+  id: number;
+  title: string;
+  venue: string;
+  numTickets: number;
+  startTime: string;
+  endTime: string;
+  cancelled: boolean;
+  imageLink: string;
+  price: number;
+  cancellationFee: number;
+  tickets: number[];
+  createdBy: number;
+  start: string;
+  end: string;
+};
+
 export type User = {
   email: string;
   password_hash: string;

@@ -73,14 +73,14 @@ export async function createUser(user: User) {
   }
 }
 
-export async function createUserByEmail(email:string){
-  try{
+export async function createUserByEmail(email: string) {
+  try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_BACKEND + "/user/new",
       {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: email,
@@ -88,10 +88,10 @@ export async function createUserByEmail(email:string){
           user_type: "customer",
         }),
       }
-    )
-    return response
-  }catch(error){
-    console.error("Error creating customer account:",error);
+    );
+    return response;
+  } catch (error) {
+    console.error("Error creating customer account:", error);
     throw error;
   }
 }
