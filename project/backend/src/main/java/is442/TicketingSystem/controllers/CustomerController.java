@@ -154,7 +154,8 @@ public class CustomerController {
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
             if (Objects.isNull(userRepository.findFirstByEmail(user.getEmail()))) {
-                return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
+                userRepository.createUser(user.getEmail(), user.getPassword_hash(), user.getUser_type());
+                return new ResponseEntity<>(null, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
