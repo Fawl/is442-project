@@ -12,7 +12,7 @@ INSERT INTO user_table(email, password_hash, user_type, balance) VALUES
 ('millionaire@customer.com', 'Password@888', 'customer', 1000000), -- 10
 ('billionaire@customer.com', 'Password@888', 'customer', 1000000000), -- 11
 ('poor@customer.com', 'Password@888', 'customer', 0), -- 12
-('normal@customer.com', 'Password@888', 'customer', 10000), -- 13
+('normal@customer.com', 'Password@888', 'customer', 10000); -- 13
 
 INSERT INTO tags (tag_name, tag_type) VALUES
 ('Rock', 'Music'), -- 1

@@ -15,14 +15,14 @@ CREATE TABLE "user_table" (
   "email" varchar(255) UNIQUE NOT NULL,
   "password_hash" varchar(32) NOT NULL,
   "user_type" usertype NOT NULL,
-  "balance" float
+  "balance" float DEFAULT 1000
 );
 
 CREATE TABLE "ticketedevent" (
   "id" serial PRIMARY KEY,
   "title" varchar(255) NOT NULL,
   "venue" varchar(255) NOT NULL,
-  "desc" text,
+  "description" text,
   "price" float NOT NULL,
   "cancellation_fee" float NOT NULL DEFAULT 0.0,
   "num_tickets" int NOT NULL,

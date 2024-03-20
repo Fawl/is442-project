@@ -2,6 +2,8 @@ package is442.TicketingSystem.models;
 
 import java.util.List;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -18,6 +20,7 @@ IN THE application.properties
  */
 
 @Data
+@DynamicUpdate
 @Entity
 @Table(name = "ticketedevent")
 public class Event {
@@ -27,6 +30,7 @@ public class Event {
 	private Long id;
 	private String title;
 	private String venue;
+	private String description;
 	/*
 	ALSO, JPA/PSQL DOES NOT LIKE UNDERSCORES VERY MUCH.
 	https://stackoverflow.com/questions/23456197/spring-data-jpa-repository-underscore-on-entity-column-name
