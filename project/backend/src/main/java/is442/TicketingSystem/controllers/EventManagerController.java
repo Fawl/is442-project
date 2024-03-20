@@ -15,8 +15,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.util.Map;
 
 
 @RestController
@@ -31,15 +30,15 @@ public class EventManagerController extends EventController {
 	private EventManagerRepository eventManagerRepository;
 
 	@Transactional
-	@GetMapping("/cancel")
-	public ResponseEntity<Event> cancelEvent(@RequestParam int id){
+	@DeleteMapping("/cancel")
+	public ResponseEntity<Map<String, String>> cancelEvent(@RequestParam int id){
 		Event e = eventRepository.findById(id);
 		if (Objects.isNull(e)){
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, String>>(Map.of("message", String.format("Event with id: %d NOT FOUND", id)), HttpStatus.NOT_FOUND);
 		}
 
 		if (e.getCancelled()){
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			return new ResponseEntity<Map<String, String>>(Map.of("message", String.format("Event with id: %d HAS BEEN CANCELLED ALREADY", id)), HttpStatus.CONFLICT);
 		}
 		e.setCancelled(true);
 		eventRepository.save(e);
@@ -52,7 +51,11 @@ public class EventManagerController extends EventController {
 			ticket.setRefunded(true);
 			ticketRepository.save(ticket);
 		}
-		return new ResponseEntity<>(null, HttpStatus.OK);
+
+		
+		return new ResponseEntity<Map<String, String>>(
+			Map.of("message", String.format("Event with id: %d deleted. Total tickets refunded: %d ", id, tl.size())),
+			HttpStatus.OK);
 
 	}
 
