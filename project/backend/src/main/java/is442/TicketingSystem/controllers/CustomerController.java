@@ -14,6 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/user")
@@ -22,11 +25,11 @@ public class CustomerController {
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private EventRepository eventRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private UserRepository<User> userRepository;
 
     // OK
     @GetMapping("/bookings")
@@ -68,13 +71,12 @@ public class CustomerController {
         e.setNumTickets(e.getNumTickets() + 1);
         t.setRefunded(true);
 
-        userRepository.save(c);
+        customerRepository.save(c);
         eventRepository.save(e);
         ticketRepository.save(t);
         return new ResponseEntity<Map<String, String>>(Map.of("message", "Cancelled ticket"), HttpStatus.OK);
     }
 
-    // TODO: CHECK FIRST IF 4 TICKETS HAVE BEEN PURCHASED TO THE SAME EVENT
     @Transactional
     @PostMapping("/purchase")
     public ResponseEntity<List<Ticket>> purchaseTicket(@RequestParam int event_id, @RequestParam int user_id,
@@ -109,7 +111,7 @@ public class CustomerController {
         }
 
         c.setBalance(c.getBalance() - e.getPrice() * qty);
-        userRepository.save(c);
+        customerRepository.save(c);
         e.setNumTickets(e.getNumTickets() - qty);
         eventRepository.save(e);
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(allCreated);
@@ -118,11 +120,23 @@ public class CustomerController {
     // OK
     @GetMapping("/all")
     public ResponseEntity<List<User>> findAll() {
+        List<User> ls = new ArrayList<>();
         try {
-            return new ResponseEntity<List<User>>(userRepository.findAll(), HttpStatus.OK);
+            ls.addAll(userRepository.findAllCustomers());
+            ls.addAll(userRepository.findAllEventManagers());
+            ls.addAll(userRepository.findAllTicketOfficer());
+
+            return new ResponseEntity<List<User>>(ls, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
         }
+    }
+
+    // OK
+    @GetMapping
+    public ResponseEntity<User> findUserAlt(@RequestParam(required = false) String email,
+    @RequestParam(required = false) Long id) {
+        return findUser(email, id);
     }
 
     // OK
@@ -153,8 +167,8 @@ public class CustomerController {
     @PostMapping("/new")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
-            if (Objects.isNull(userRepository.findFirstByEmail(user.getEmail()))) {
-                userRepository.createUser(user.getEmail(), user.getPassword_hash(), user.getUser_type());
+            if (Objects.isNull(customerRepository.findFirstByEmail(user.getEmail()))) {
+                customerRepository.createUser(user.getEmail(), user.getPassword_hash(), user.getUser_type());
                 return new ResponseEntity<>(null, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
@@ -172,7 +186,7 @@ public class CustomerController {
 
             if (Objects.isNull(u)) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            } else if (!Objects.isNull(userRepository.findFirstByEmail(request.getEmailAfter()))) {
+            } else if (!Objects.isNull(customerRepository.findFirstByEmail(request.getEmailAfter()))) {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             } else {
                 if (!Objects.isNull(request.getEmailAfter()) && !request.getEmailAfter().equals("")) {
@@ -183,8 +197,11 @@ public class CustomerController {
                 }
                 if (!Objects.isNull(request.getUser_type())) {
                     u.setUser_type(request.getUser_type());
+                    userRepository.deleteByEmail(u.getEmail());
                 }
-                return new ResponseEntity<>(userRepository.save(u), HttpStatus.OK);
+
+                userRepository.save(u);
+                return new ResponseEntity<>(u, HttpStatus.OK);
 
             }
 
@@ -197,7 +214,7 @@ public class CustomerController {
     @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUser(@RequestParam String email) {
         try {
-            String status = userRepository.deleteByEmail(email);
+            String status = customerRepository.deleteByEmail(email);
             if (status.equals("0")) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }

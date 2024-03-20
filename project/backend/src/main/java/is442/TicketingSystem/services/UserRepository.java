@@ -1,5 +1,6 @@
 package is442.TicketingSystem.services;
 
+import java.util.List;
 import is442.TicketingSystem.utils.UserType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import jakarta.transaction.Transactional;
@@ -8,15 +9,27 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import is442.TicketingSystem.models.User;
+import is442.TicketingSystem.models.*;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository< T extends User > extends JpaRepository<T, Long> {
+
+
+	// LOVELY JAVA STRIKES AGAIN https://stackoverflow.com/questions/63656497/jpa-repository-with-single-table-inheritance-hibernate
+	@Query("from Customer")
+	List<Customer> findAllCustomers();
+
+	@Query("from EventManager")
+	List<EventManager> findAllEventManagers();
+
+	@Query("from TicketOfficer")
+	List<TicketOfficer> findAllTicketOfficer();
+
 	String deleteByEmail(String email);
 
-	User findFirstByEmail(String email);
+	T findFirstByEmail(String email);
 
-	User findById(int id);
+	T findById(int id);
 
 	// THANKS JAVA FOR BEING FUCKING ANNOYING
 	// https://stackoverflow.com/questions/44460394/can-i-use-enum-parameter-into-jparepository-nativequery

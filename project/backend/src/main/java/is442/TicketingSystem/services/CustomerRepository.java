@@ -4,10 +4,6 @@ import org.springframework.stereotype.Repository;
 import is442.TicketingSystem.models.Customer;
 
 @Repository
-public interface CustomerRepository extends UserRepository{
+public interface CustomerRepository extends UserRepository<Customer> {
 
-
-	Customer findFirstByEmail(String email);
-
-	Customer findById(int id);
 }

@@ -31,8 +31,6 @@ public class TicketOfficer extends EventController {
 	@Autowired
 	private TicketRepository ticketRepository;
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
     private CustomerRepository customerRepository;
 
 	/**
@@ -57,7 +55,7 @@ public class TicketOfficer extends EventController {
 
 		Customer c = (Customer) customerRepository.findById(ticket.getUser_id()).get();
 		c.setBalance(c.getBalance() - ticket.getPrice());
-		userRepository.save(c);
+		customerRepository.save(c);
 
 		Event event = eventRepository.findById(ticket.getEvent_id()).get();
 		event.decrementTickets();

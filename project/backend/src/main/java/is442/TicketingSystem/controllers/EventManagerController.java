@@ -23,11 +23,11 @@ import java.util.Map;
 public class EventManagerController extends EventController {
 
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private TicketRepository ticketRepository;
 	@Autowired
 	private EventManagerRepository eventManagerRepository;
+	@Autowired
+	private CustomerRepository customerRepository;
 
 	@Transactional
 	@DeleteMapping("/cancel")
@@ -47,11 +47,10 @@ public class EventManagerController extends EventController {
 		for (Ticket ticket : tl){
 			Customer c = ticket.getBoughtBy();
 			c.setBalance(c.getBalance() + ticket.getPrice());
-			userRepository.save(c);
+			customerRepository.save(c);
 			ticket.setRefunded(true);
-			ticketRepository.save(ticket);
 		}
-
+		ticketRepository.saveAllAndFlush(tl);
 		
 		return new ResponseEntity<Map<String, String>>(
 			Map.of("message", String.format("Event with id: %d deleted. Total tickets refunded: %d ", id, tl.size())),
@@ -75,7 +74,7 @@ public class EventManagerController extends EventController {
 				Event.setImageLink(utils.getRandomImage());
 			}
 
-			Event.setCreatedBy(userRepository.findById(user_id).get());
+			Event.setCreatedBy(eventManagerRepository.findById(user_id).get());
 			return new ResponseEntity<Event>(eventRepository.save(Event), HttpStatus.CREATED);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Shit aint work: " + e.getMessage());
@@ -122,7 +121,7 @@ public class EventManagerController extends EventController {
 		return new ResponseEntity<>(eventRepository.save(e), HttpStatus.OK);
 	}
 
-	@GetMapping("/eventstest") // Simple test to get all events created by a manager
+	@GetMapping("/owned") // Simple test to get all events created by a manager
 	public ResponseEntity<List<Event>> getEvents(@RequestParam int emid){
 		EventManager em = eventManagerRepository.findById(emid);
 		return new ResponseEntity<>(em.getEvents(), HttpStatus.OK);

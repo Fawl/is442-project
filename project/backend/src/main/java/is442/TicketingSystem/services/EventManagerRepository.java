@@ -4,10 +4,6 @@ import org.springframework.stereotype.Repository;
 import is442.TicketingSystem.models.EventManager;
 
 @Repository
-public interface EventManagerRepository extends UserRepository{
+public interface EventManagerRepository extends UserRepository <EventManager>{
 
-
-	EventManager findFirstByEmail(String email);
-
-	EventManager findById(int id);
 }
