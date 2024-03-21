@@ -3,15 +3,27 @@ import { render } from "@react-email/components";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+
+interface Ticket {
+  id: number;
+  event: number;
+  boughtBy: number;
+  redeemed: boolean;
+  refunded: boolean;
+  purchaseTime: string;
+  price: number;
+}
+
 interface RequestBody {
   recipientEmail: string;
   subject: string;
+  ticket: Ticket[];
 }
 
 export async function POST(request: { json: () => Promise<RequestBody> }) {
+  
   try {
-    const { recipientEmail, subject } = await request.json();
-    
+    const { recipientEmail, subject, ticket } = await request.json();
     if (!recipientEmail || !subject) {
       return NextResponse.json(
         { message: "Recipient email and subject are required" },
@@ -30,7 +42,9 @@ export async function POST(request: { json: () => Promise<RequestBody> }) {
       },
     });
 
-    const emailHtml = render(SampleEmail({ url: "https://example.com" }));
+    const emailHtml = render(
+      SampleEmail({ url: "https://example.com", ticket: ticket })
+    );
 
     const mailOptions = {
       from: "ticketeer101@gmail.com",

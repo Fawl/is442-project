@@ -8,16 +8,16 @@ import {
   Column,
   Img,
 } from "@react-email/components";
-import QRCode from "react-qr-code";
+
 import * as React from "react";
 import { Hr } from "@react-email/components";
 import { MapIcon, MapPinIcon, TicketIcon } from "lucide-react";
 
+
 export default function SampleEmail(props: any) {
-  const { url, ticketId } = props;
-
+  const { url, ticket } = props;
+  console.log(ticket);
   
-
   const name = "Chi Yong";
   return (
     <Tailwind>
@@ -44,7 +44,7 @@ export default function SampleEmail(props: any) {
             <div className="my-2 flex flex-row">
               <div className="rounded-lg w-8 h-8 p-2 bg-[#fcfafa] text-green-800 text-center flex justify-center">
                 <div className="mx-auto my-auto">
-                  <MapPinIcon/>
+                  <MapPinIcon />
                 </div>
               </div>
               <div className="my-auto mx-2">
@@ -61,11 +61,34 @@ export default function SampleEmail(props: any) {
             </div>
             <Hr />
             <div className="p-2">
-              <div className=" font-xl">Hi, {name} Here is your ticket</div>
-              <div className="my-2 flex justify-center">
-                <QRCode value={ticketId} className="h-40 w-40 m-2" />
+              <div className=" font-xl">
+                Hi, {name} Here is your ticket(s) information
               </div>
-              <div className="text-center font-semibold">{ticketId}</div>
+
+              {ticket.map((tix: any, index:any) => (
+                <div key={index} className="bg-white shadow-md p-4 mb-4">
+                  <div className="text-lg font-semibold text-center mb-2">
+                    Ticket Details
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div key={`ticket-id-${tix.id}`} className="text-gray-600">
+                      Ticket ID: {tix.id}
+                    </div>
+                    <div
+                      key={`event-id-${tix.event}`}
+                      className="text-gray-600"
+                    >
+                      Event ID: {tix.event}
+                    </div>
+                    <div key={`price-${tix.id}`} className="text-gray-600">
+                      Price: ${tix.price}
+                    </div>
+                    <div key={index}> 
+                      <Img key={index} src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${tix.id}`} ></Img>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </Section>
         </div>
