@@ -13,6 +13,7 @@ import { Input } from "../ui/input";
 import { MinusCircle, PlusCircleIcon } from "lucide-react";
 import { purchaseTicketByEventIdANDUserId } from "@/lib/api/ticket";
 import { toast } from "sonner";
+import { getEventById } from "@/lib/api/event";
 
 export default function PurchaseTicketModal({
   eventId,

@@ -46,6 +46,28 @@ export async function getUserByEmail(email: string) {
   }
 }
 
+export async function getUserById(id:any){
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + `/user/find?id=${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+}
+
 export async function createUser(user: User) {
   try {
     const response = await fetch(

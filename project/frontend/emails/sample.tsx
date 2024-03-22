@@ -16,7 +16,7 @@ import { MapIcon, MapPinIcon, TicketIcon } from "lucide-react";
 
 export default function SampleEmail(props: any) {
   const { url, ticket } = props;
-  console.log(ticket);
+  
   
   const name = "Chi Yong";
   return (
