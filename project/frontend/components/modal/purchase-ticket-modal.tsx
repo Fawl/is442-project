@@ -13,7 +13,7 @@ import { Input } from "../ui/input";
 import { MinusCircle, PlusCircleIcon } from "lucide-react";
 import { purchaseTicketByEventIdANDUserId } from "@/lib/api/ticket";
 import { toast } from "sonner";
-import { getEventById } from "@/lib/api/event";
+
 
 export default function PurchaseTicketModal({
   eventId,
@@ -45,15 +45,17 @@ export default function PurchaseTicketModal({
     }
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     const payload = { eventId, userId, ticketQuantity };
     try {
-      const response = purchaseTicketByEventIdANDUserId(payload);
+      const response = await purchaseTicketByEventIdANDUserId(payload);
       if (response != null) {
         toast.success("Ticket purchased successfully");
         setOpen(false);
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Failed to purchase ticket")
+    }
   };
 
   return (

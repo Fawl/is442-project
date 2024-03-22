@@ -28,6 +28,30 @@ export async function purchaseTicketByEventIdANDUserId(payload: any) {
   }
 }
 
+export async function getTicketsByUserId(userId:any){
+  
+  
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND+
+      `/user/tickets?user_id=${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type":"application/json"
+        }
+      }
+      )
+      if(!response.ok){
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      return response.json()
+  } catch (error) {
+    console.error("Error fetching ticket purchase:",error )
+    throw error
+  }
+}
+
+
 export async function getTicketPurchaseByEventIdANDUserId(payload: any) {
   const { eventId, userId } = payload;
 
