@@ -45,7 +45,8 @@ CREATE TABLE "ticket" (
   "purchase_time" timestamp NOT NULL DEFAULT NOW(),
   "bought_by" integer NOT NULL,
   "redeemed" bool NOT NULL DEFAULT false,
-  "refunded" bool NOT NULL DEFAULT false
+  "refunded" bool NOT NULL DEFAULT false,
+  "user_cancelled" bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE "event_can_manage" (
@@ -78,3 +79,68 @@ ALTER TABLE "event_can_manage" ADD CONSTRAINT "event_event_fk" FOREIGN KEY ("eve
 ALTER TABLE "ticket_officer_event_manager" ADD CONSTRAINT "ticket_officer_user_fk" FOREIGN KEY ("ticket_officer_id") REFERENCES "user_table" ("id");
 
 ALTER TABLE "ticket_officer_event_manager" ADD CONSTRAINT "event_manager_user_fk" FOREIGN KEY ("event_manager_id") REFERENCES "user_table" ("id");
+
+-- Upon ticket being marked as cancelled, automatically mark all tickets as refunded
+-- Upon ticket being marked as refunded, credit to user's balance
+
+CREATE OR REPLACE FUNCTION refund_tickets_and_update_balance()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Check if cancelled
+  IF OLD.cancelled IS FALSE AND NEW.cancelled IS TRUE THEN
+    -- Update associated tickets
+    UPDATE "ticket"
+    SET "refunded" = TRUE
+    WHERE "event_id" = NEW.id AND "redeemed" = FALSE AND "refunded" = FALSE;
+
+    -- Update user's balance
+    UPDATE "user_table"
+    SET "balance" = "balance" + sub_price
+    FROM (
+      SELECT "bought_by", SUM("price") as price
+      FROM "ticket"
+      WHERE "event_id" = NEW.id AND "redeemed" = FALSE AND "refunded" = TRUE
+      GROUP BY "bought_by"
+    ) AS sub
+    WHERE "user_table"."id" = sub."bought_by";
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- CREATE TRIGGER on_refund_tickets
+-- AFTER UPDATE OF cancelled ON "ticketedevent"
+-- FOR EACH ROW
+-- WHEN (OLD.cancelled IS FALSE AND NEW.cancelled IS TRUE)
+-- EXECUTE FUNCTION refund_tickets_and_update_balance();
+
+CREATE OR REPLACE FUNCTION refund_user_cancelled_ticket()
+RETURNS TRIGGER AS $$
+DECLARE
+  refund_amount float;
+  cancellation_fee float;
+BEGIN
+  -- Check if user marked as cancelled
+  IF NEW.user_cancelled IS TRUE AND OLD.user_cancelled IS FALSE THEN
+    -- Get cancellation fee
+    SELECT "cancellation_fee" INTO cancellation_fee
+    FROM "ticketedevent"
+    WHERE "id" = NEW.event_id;
+
+    -- Calculate refund amount
+    refund_amount := NEW.price - cancellation_fee;
+
+    -- Update balance
+    UPDATE "user_table"
+    SET "balance" = "balance" + refund_amount
+    WHERE "id" = NEW.bought_by;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- CREATE TRIGGER on_user_cancelled_ticket
+-- AFTER UPDATE OF user_cancelled ON "ticket"
+-- FOR EACH ROW
+-- WHEN (OLD.user_cancelled IS FALSE AND NEW.user_cancelled IS TRUE)
+-- EXECUTE FUNCTION refund_user_cancelled_ticket();
