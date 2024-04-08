@@ -190,13 +190,13 @@ public class CustomerController {
             //     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             // } 
             else {
-                if (!Objects.isNull(request.getEmail()) && !u.getEmail().equals("") && !u.getEmail().equals(request.getEmail()) ) {
+                if (!Objects.isNull(request.getEmail()) && !request.getEmail().equals("") && !u.getEmail().equals(request.getEmail()) ) {
                     u.setEmail(request.getEmail());
                 }
-                if (!Objects.isNull(request.getName()) && !u.getName().equals("") && !u.getName().equals(request.getName())) {
+                if (!Objects.isNull(request.getName()) && !request.getName().equals("") && !u.getName().equals(request.getName())) {
                     u.setName(request.getName());
                 }
-                if (!Objects.isNull(request.getPassword_hash()) && !u.getPassword_hash().equals("") && !u.getPassword_hash().equals(request.getPassword_hash())) {
+                if (!Objects.isNull(request.getPassword_hash()) && !request.getPassword_hash().equals("") && !u.getPassword_hash().equals(request.getPassword_hash())) {
                     u.setPassword_hash(request.getPassword_hash());
                 }
                 
