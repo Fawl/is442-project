@@ -1,18 +1,18 @@
 -- Independent tables
-INSERT INTO user_table(email, password_hash, user_type, balance) VALUES
-('test1@example.com', 'Password@888', 'customer', 10000), -- 1
-('test2@example.com', 'Password@888', 'ticket_officer', 10000), -- 2
-('test3@example.com', 'Password@888', 'ticket_officer', 10000), -- 3
-('one@manager.com', 'Password@888', 'event_manager', 10000), -- 4
-('two@manager.com', 'Password@888', 'event_manager', 10000), -- 5
-('three@manager.com', 'Password@888', 'event_manager', 10000), -- 6
-('one@ticket.com', 'Password@888', 'ticket_officer', 10000), -- 7
-('two@ticket.com', 'Password@888', 'ticket_officer', 10000), -- 8
-('three@ticket.com', 'Password@888', 'ticket_officer', 10000), -- 9
-('millionaire@customer.com', 'Password@888', 'customer', 1000000), -- 10
-('billionaire@customer.com', 'Password@888', 'customer', 1000000000), -- 11
-('poor@customer.com', 'Password@888', 'customer', 0), -- 12
-('normal@customer.com', 'Password@888', 'customer', 10000); -- 13
+INSERT INTO user_table(email, name, password_hash, user_type, balance) VALUES
+('test1@example.com', 'Bob', 'Password@888', 'customer', 10000), -- 1
+('test2@example.com', 'John', 'Password@888', 'ticket_officer', 10000), -- 2
+('test3@example.com', 'Jane', 'Password@888', 'ticket_officer', 10000), -- 3
+('one@manager.com', 'Jorge', 'Password@888', 'event_manager', 10000), -- 4
+('two@manager.com', 'Calvin', 'Password@888', 'event_manager', 10000), -- 5
+('three@manager.com', 'Martin', 'Password@888', 'event_manager', 10000), -- 6
+('one@ticket.com', 'Gerald', 'Password@888', 'ticket_officer', 10000), -- 7
+('two@ticket.com', 'Leonard', 'Password@888', 'ticket_officer', 10000), -- 8
+('three@ticket.com', 'Mina', 'Password@888', 'ticket_officer', 10000), -- 9
+('millionaire@customer.com', 'Jeffrey', 'Password@888', 'customer', 1000000), -- 10
+('billionaire@customer.com', 'Ida', 'Password@888', 'customer', 1000000000), -- 11
+('poor@customer.com', 'Lily', 'Password@888', 'customer', 0), -- 12
+('normal@customer.com', 'Anthony', 'Password@888', 'customer', 10000); -- 13
 
 INSERT INTO tags (tag_name, tag_type) VALUES
 ('Rock', 'Music'), -- 1
