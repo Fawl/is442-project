@@ -14,11 +14,49 @@ import { Hr } from "@react-email/components";
 import { MapIcon, MapPinIcon, TicketIcon } from "lucide-react";
 
 
+
 export default function SampleEmail(props: any) {
-  const { url, ticket } = props;
+  const { user,ticket,event } = props;
+  console.log(event)
+  const startTime = new Date(event.startTime);
+  const endTime = new Date(event.endTime)
+  const dayOfMonth = startTime.getDate();
+  const month = startTime.toLocaleString('default', { month: 'short' }).toUpperCase();
+  const abbreviatedMonth = month.substring(0, 3);
+  const dayOfMonthFormatted = startTime.toLocaleString('default', { weekday: 'long' });
+  function getOrdinalSuffix(day:any) {
+    if (day > 3 && day < 21) return 'th';
+    switch (day % 10) {
+        case 1: return "st";
+        case 2: return "nd";
+        case 3: return "rd";
+        default: return "th";
+    }
+}
+function formatDate(dateString:any) {
+  const date = new Date(dateString);
+  const dayOfMonth = date.getDate();
+  const ordinalSuffix = getOrdinalSuffix(dayOfMonth);
+
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthName = monthNames[date.getMonth()];
+
+  return `${dayOfMonth}${ordinalSuffix} ${monthName}`;
+}
+function formatTimeWithColon(dateString:any) {
+  const time = new Date(dateString);
+  let hours = time.getHours();
+  const minutes = time.getMinutes();
+  const period = hours >= 12 ? 'PM' : 'AM';
   
-  
-  const name = "Chi Yong";
+  if (hours > 12) {
+      hours -= 12;
+  } else if (hours === 0) {
+      hours = 12;
+  }
+
+  return `${hours}:${minutes < 10 ? '0' : ''}${minutes}${period}`;
+}
   return (
     <Tailwind>
       <Html>
@@ -26,18 +64,18 @@ export default function SampleEmail(props: any) {
           <Img
             className="w-full rounded-lg"
             alt="banner"
-            src="https://ci3.googleusercontent.com/meips/ADKq_Nb50Ng7GaBS-9VFoJxaYY2nIBmpK5HgB6gdLI3BnfwZs6WpJQgj8sRSMCcugXae7d3sohknqYisEJMbopubLQ7l5bUdt0sOpSVj7mip0mVT1QgQiidKgAG-7miJyWMw1uQXKMMn7pvHXhZRYbsuImfIAn3fGx7ARgiNtxkjyn4VUDuT4w=s0-d-e1-ft#https://image.mailing.ticketmaster.com/lib/fe3411727664047e7c1772/m/1/96b64f22-b224-463e-ad1c-31f5dfeb6413.jpg"
+            src={event.imageLink}
           />
           <Section className=" rounded-lg p-2 bg-white my-1 font-sans">
-            <span className="font-semibold text-xl">BLACKPINK WORLD TOUR</span>
+            <span className="font-semibold text-xl">{event.title}</span>
             <div className="my-2 flex flex-row">
               <div className="rounded-lg w-8 h-8 p-2 bg-[#fcfafa] text-center text-green-800">
-                <div className="text-xs">JUL</div>
-                <div>21</div>
+                <div className="text-xs">{abbreviatedMonth}</div>
+                <div>{dayOfMonth}</div>
               </div>
               <div className="my-auto mx-2">
-                <div>Friday 21st July</div>
-                <div className="text-xs text-green-800">10 AM to 5PM</div>
+                <div>{dayOfMonthFormatted} {formatDate(startTime)}</div>
+                <div className="text-xs text-green-800">{formatTimeWithColon(startTime)} to {formatTimeWithColon(endTime)}</div>
               </div>
             </div>
 
@@ -48,7 +86,7 @@ export default function SampleEmail(props: any) {
                 </div>
               </div>
               <div className="my-auto mx-2">
-                <div>National Stadium</div>
+                <div>{event.venue}</div>
                 <div className="text-xs text-green-800">Singapore</div>
               </div>
             </div>
@@ -62,7 +100,7 @@ export default function SampleEmail(props: any) {
             <Hr />
             <div className="p-2">
               <div className=" font-xl">
-                Hi, {name} Here is your ticket(s) information
+                Hi, Here is your ticket(s) information
               </div>
 
               {ticket.map((tix: any, index:any) => (
