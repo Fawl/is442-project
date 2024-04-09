@@ -5,5 +5,5 @@ import is442.TicketingSystem.models.EventManager;
 
 @Repository
 public interface EventManagerRepository extends UserRepository <EventManager>{
-
+    
 }

@@ -34,4 +34,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 	// FUCKING SHIT
 	@Query(value = "SELECT * FROM \"ticketedevent\" e WHERE e.end_time <= :date and e.cancelled = false ", nativeQuery = true)
 	List<Event> findByOngoingEvents(@Param("date") LocalDateTime date);
+
+	@Query(value = "SELECT e.* FROM ticketedevent e " +
+	"JOIN event_can_manage em ON e.id = em.event_id " +
+	"JOIN ticket_officer_event_manager toem ON em.user_id = toem.event_manager_id " +
+	"WHERE toem.ticket_officer_id = :toid", nativeQuery = true)
+	List<Event> findEventsManageableByTicketOfficer(@Param("toid") Long toid);
+
+
 }

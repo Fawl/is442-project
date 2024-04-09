@@ -93,6 +93,9 @@ INSERT INTO event_can_manage (user_id, event_id) VALUES
 (7, 4),
 (8, 5);
 
+INSERT INTO ticket_officer_event_manager (ticket_officer_id, event_manager_id) VALUES
+(2,7);
+
 INSERT INTO ticket (event_id, bought_by, price) VALUES
 (3, 11, 300),
 (4, 1, 300),

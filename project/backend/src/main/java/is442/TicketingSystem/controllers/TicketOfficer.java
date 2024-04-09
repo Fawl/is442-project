@@ -41,6 +41,7 @@ public class TicketOfficer extends EventController {
 	 * @Optional redeemed, refunded
 	 * @return The created ticket object
 	 */
+
 	@Transactional
 	@PostMapping("/new")
 	public ResponseEntity<Map<String, String>> createTicket(@RequestBody NewTicket ticket) {
@@ -87,10 +88,20 @@ public class TicketOfficer extends EventController {
 			return new ResponseEntity<Map<String, String>>(Map.of("message", "Validated."), HttpStatus.OK);
 		}
 	}
+	@GetMapping("/events")
+	public ResponseEntity<List<Event>> getEvents(@RequestParam Long toid){
+		List<Event> events = eventRepository.findEventsManageableByTicketOfficer(toid);
+		if (Objects.isNull(events)){
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); 
+		}
+		return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
+	}
 
 	private ResponseEntity<Map<String, String>> redeemTicket(Ticket ticket){
 		ticket.setRedeemed();
 		ticketRepository.save(ticket);
 		return new ResponseEntity<Map<String, String>>(Map.of("message", "Redeemed."), HttpStatus.OK);
 	}
+
+	
 }
