@@ -39,4 +39,11 @@ public interface UserRepository< T extends User > extends JpaRepository<T, Long>
 				"VALUES (:email, :name, :password_hash, CAST(:#{#user_type?.name()} as usertype) )" 
 				, nativeQuery = true)
 	void createUser(@Param("email") String email, @Param("name") String name, @Param("password_hash") String password_hash, @Param("user_type") UserType userType);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "INSERT INTO ticket_officer_event_manager (ticket_officer_id, event_manager_id)" +
+				"VALUES (:toid, :emid )" 
+				, nativeQuery = true)
+	void createTOEMmap(@Param("toid") Long toid, @Param("emid") Long emid);
 }

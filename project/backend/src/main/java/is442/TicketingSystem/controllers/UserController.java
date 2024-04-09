@@ -3,6 +3,8 @@ package is442.TicketingSystem.controllers;
 import is442.TicketingSystem.models.*;
 import jakarta.transaction.Transactional;
 import is442.TicketingSystem.services.*;
+import is442.TicketingSystem.utils.UserType;
+
 import java.util.*;
 
 import org.springframework.http.HttpStatus;
@@ -70,16 +72,31 @@ public class UserController {
     // OK
     // TODO: Only allow Event Managers to create Ticket Officers???
     @PostMapping("/new")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> createUser(@RequestBody User user, @RequestParam(required = false) Long emid) {
         try {
             if (Objects.isNull(userRepository.findFirstByEmail(user.getEmail()))) {
-                userRepository.createUser(user.getEmail(), user.getName(), user.getPassword_hash(), user.getUser_type());
-                return new ResponseEntity<>(null, HttpStatus.CREATED);
+
+                if (user.getUser_type() == UserType.ticket_officer) {
+                    Optional<User> em = userRepository.findById(emid);
+
+                    if (em.isPresent() && em.get().getUser_type() == UserType.event_manager) {
+                        userRepository.createUser(user.getEmail(), user.getName(), user.getPassword_hash(), user.getUser_type());
+                        userRepository.createTOEMmap(userRepository.findFirstByEmail(user.getEmail()).getId(), emid);
+                        return new ResponseEntity<>(Map.of("message", "Success."), HttpStatus.CREATED);
+                    } else {
+                        throw new Exception("Event Manager ID provided is invalid.");
+                    }
+
+                } else {
+                    userRepository.createUser(user.getEmail(), user.getName(), user.getPassword_hash(), user.getUser_type());
+                    return new ResponseEntity<>(Map.of("message", "Success."), HttpStatus.CREATED);
+                }
+
             } else {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                return new ResponseEntity<>(Map.of("message", "Failed. Existing user with specified email found."), HttpStatus.CONFLICT);
             }
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
+            return new ResponseEntity<Map<String, String>>(Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

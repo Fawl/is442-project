@@ -56,7 +56,7 @@ CREATE TABLE "event_can_manage" (
 );
 
 CREATE TABLE "ticket_officer_event_manager" (
-  "ticket_officer_id" integer NOT NULL,
+  "ticket_officer_id" integer PRIMARY KEY NOT NULL,
   "event_manager_id" integer NOT NULL
 );
 

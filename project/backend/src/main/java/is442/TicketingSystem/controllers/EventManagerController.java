@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/manager/event")
+@RequestMapping("/manager")
 public class EventManagerController extends EventController {
 
 	@Autowired
@@ -28,10 +28,11 @@ public class EventManagerController extends EventController {
 	private EventManagerRepository eventManagerRepository;
 	@Autowired
 	private CustomerRepository customerRepository;
-	@Autowired TicketOfficerRepository ticketOfficerRepository;
+	@Autowired
+	private TicketOfficerRepository ticketOfficerRepository;
 
 	@Transactional
-	@DeleteMapping("/cancel")
+	@DeleteMapping("/event/cancel")
 	public ResponseEntity<Map<String, String>> cancelEvent(@RequestParam int id){
 		Event e = eventRepository.findById(id);
 		if (Objects.isNull(e)){
@@ -68,7 +69,7 @@ public class EventManagerController extends EventController {
 	 * @return The created event object
 	 */
 	@Transactional
-	@PostMapping("/new")
+	@PostMapping("/event/new")
 	public ResponseEntity<Event> create(@RequestBody Event Event, @RequestParam Long user_id) {
 		try {
 			if (Objects.isNull(Event.getImageLink())) {
@@ -84,7 +85,7 @@ public class EventManagerController extends EventController {
 
 	// update a Event
 	@Transactional
-	@PutMapping("/update")
+	@PutMapping("/event/update")
 	public ResponseEntity<Event> update(@RequestBody Event Event, @RequestParam long id) {
 		if (Event.getId() != id) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Mismatch Event Id");
@@ -96,12 +97,12 @@ public class EventManagerController extends EventController {
 		return new ResponseEntity<Event>(eventRepository.save(Event), HttpStatus.OK);
 	}
 
-	@GetMapping("/old")
+	@GetMapping("/event/old")
 	public List<Event> getPastEvents() {
 		return eventRepository.findByEndTimeBefore(LocalDateTime.now());
 	}
 
-	@GetMapping("/tickets")
+	@GetMapping("/event/tickets")
 	public ResponseEntity<List<Ticket>> getValidTickets(@RequestParam long event_id) {
 		Event event = eventRepository.findById(event_id).orElse(null);
 		if (Objects.isNull(event)){
@@ -111,7 +112,7 @@ public class EventManagerController extends EventController {
 	}
 
 	@Transactional
-	@PutMapping("/cancellation_fee")
+	@PutMapping("/event/cancellation_fee")
 	public ResponseEntity<Event> setCancellationFee(@RequestParam int id, @RequestParam float fee){
 		Event e = eventRepository.findById(id);
 		if (Objects.isNull(e)){
@@ -122,13 +123,13 @@ public class EventManagerController extends EventController {
 		return new ResponseEntity<>(eventRepository.save(e), HttpStatus.OK);
 	}
 
-	@GetMapping("/owned") // Simple test to get all events created by a manager
+	@GetMapping("/event/owned") // Simple test to get all events created by a manager
 	public ResponseEntity<List<Event>> getEvents(@RequestParam int emid){
 		EventManager em = eventManagerRepository.findById(emid);
 		return new ResponseEntity<>(em.getEvents(), HttpStatus.OK);
 	}
 
-	@GetMapping("officers")
+	@GetMapping("/officers")
 	public ResponseEntity<List<TicketOfficer>> getOfficersByManager(@RequestParam Long emid){
 		List<TicketOfficer> tolist = ticketOfficerRepository.findTicketOfficersByEventManager(emid);
 		if (Objects.isNull(tolist)){
