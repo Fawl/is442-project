@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/customer")
 public class CustomerController {
 
     @Autowired
@@ -27,8 +26,6 @@ public class CustomerController {
     private EventRepository eventRepository;
     @Autowired
     private CustomerRepository customerRepository;
-    @Autowired
-    private UserRepository<User> userRepository;
 
     // OK
     @GetMapping("/bookings")
@@ -114,119 +111,6 @@ public class CustomerController {
         e.setNumTickets(e.getNumTickets() - qty);
         eventRepository.save(e);
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(allCreated);
-    }
-
-    // OK
-    @GetMapping("/all")
-    public ResponseEntity<List<User>> findAll() {
-        List<User> ls = new ArrayList<>();
-        try {
-            ls.addAll(userRepository.findAllCustomers());
-            ls.addAll(userRepository.findAllEventManagers());
-            ls.addAll(userRepository.findAllTicketOfficer());
-
-            return new ResponseEntity<List<User>>(ls, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
-        }
-    }
-
-    // OK
-    @GetMapping
-    public ResponseEntity<User> findUserAlt(@RequestParam(required = false) String email,
-    @RequestParam(required = false) Long id) {
-        return findUser(email, id);
-    }
-
-    // OK
-    @GetMapping("/find")
-    public ResponseEntity<User> findUser(@RequestParam(required = false) String email,
-            @RequestParam(required = false) Long id) {
-        User u = null;
-        if (!Objects.isNull(id)) {
-            u = userRepository.findById(id).get();
-        } else if (!Objects.isNull(email)) {
-            u = userRepository.findFirstByEmail(email);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: No Email or ID provided.");
-        }
-
-        try {
-            if (Objects.isNull(u)) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(u, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
-        }
-    }
-
-    // OK
-    // TODO: Only allow Event Managers to create Ticket Officers???
-    @PostMapping("/new")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        try {
-            if (Objects.isNull(customerRepository.findFirstByEmail(user.getEmail()))) {
-                customerRepository.createUser(user.getEmail(), user.getName(), user.getPassword_hash(), user.getUser_type());
-                return new ResponseEntity<>(null, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-            }
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
-        }
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User request) {
-        try {
-
-            User u = userRepository.findFirstByEmail(request.getEmail());
-
-            if (Objects.isNull(u)) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-            // else if (!Objects.isNull(customerRepository.findFirstByEmail(request.getEmailAfter()))) {
-            //     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-            // } 
-            else {
-                if (!Objects.isNull(request.getEmail()) && !request.getEmail().equals("") && !u.getEmail().equals(request.getEmail()) ) {
-                    u.setEmail(request.getEmail());
-                }
-                if (!Objects.isNull(request.getName()) && !request.getName().equals("") && !u.getName().equals(request.getName())) {
-                    u.setName(request.getName());
-                }
-                if (!Objects.isNull(request.getPassword_hash()) && !request.getPassword_hash().equals("") && !u.getPassword_hash().equals(request.getPassword_hash())) {
-                    u.setPassword_hash(request.getPassword_hash());
-                }
-                
-                if (!Objects.isNull(request.getUser_type()) && (u.getUser_type() != request.getUser_type())) {
-                    u.setUser_type(request.getUser_type());
-                    userRepository.deleteByEmail(u.getEmail());
-                }
-
-                userRepository.save(u);
-                return new ResponseEntity<>(u, HttpStatus.OK);
-
-            }
-
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
-        }
-    }
-
-    @Transactional
-    @DeleteMapping("/delete")
-    public ResponseEntity<User> deleteUser(@RequestParam String email) {
-        try {
-            String status = customerRepository.deleteByEmail(email);
-            if (status.equals("0")) {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(null, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: " + e.getMessage());
-        }
     }
 
     @GetMapping("/tickets")

@@ -8,7 +8,7 @@ export async function purchaseTicketByEventIdANDUserId(payload: any) {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_BACKEND +
-        `/user/purchase?event_id=${eventId}&user_id=${userId}&qty=${ticketQuantity}`,
+        `/customer/purchase?event_id=${eventId}&user_id=${userId}&qty=${ticketQuantity}`,
       {
         method: "POST",
         headers: {
@@ -34,7 +34,7 @@ export async function getTicketsByUserId(userId:any){
   
   try {
     const response = await fetch(process.env.NEXT_PUBLIC_BACKEND+
-      `/user/tickets?user_id=${userId}`,
+      `/customer/tickets?user_id=${userId}`,
       {
         method: "GET",
         headers: {
@@ -58,7 +58,7 @@ export async function getTicketPurchaseByEventIdANDUserId(payload: any) {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_BACKEND +
-        `/user/purchase?event_id=${eventId}&user_id=${userId}`,
+        `/customer/purchase?event_id=${eventId}&user_id=${userId}`,
       {
         method: "GET",
         headers: {
@@ -106,7 +106,7 @@ export async function issueTicketByTicketOfficer(payload: any) {
   try {
     const ticket = await fetch(
       process.env.NEXT_PUBLIC_BACKEND +
-        `/user/purchase?event_id=${eventId}&user_id=${userId}&qty=${ticketQuantity}`,
+        `/customer/purchase?event_id=${eventId}&user_id=${userId}&qty=${ticketQuantity}`,
       {
         method: "POST",
         headers: {
