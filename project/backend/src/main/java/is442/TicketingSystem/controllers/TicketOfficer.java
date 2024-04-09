@@ -66,7 +66,7 @@ public class TicketOfficer extends EventController {
 	}
 
 	@GetMapping("/user")
-	public ResponseEntity<List<Ticket>> getMethodName(@RequestParam Long user_id) {
+	public ResponseEntity<List<Ticket>> findTicketsByUser(@RequestParam Long user_id) {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ticketRepository.findByBoughtBy(user_id));
 	}
 
