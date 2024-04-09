@@ -22,8 +22,8 @@ services:
   backend:
     container_name: OOPbackend
     build:
-      context: ./
-      dockerfile: ./backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     # env_file: ./backend/.env
     depends_on:
       database:
