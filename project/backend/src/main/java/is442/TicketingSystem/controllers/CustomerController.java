@@ -3,7 +3,6 @@ package is442.TicketingSystem.controllers;
 import is442.TicketingSystem.models.*;
 import jakarta.transaction.Transactional;
 import is442.TicketingSystem.services.*;
-import is442.TicketingSystem.utils.*;
 import java.util.*;
 
 import org.springframework.http.HttpStatus;
@@ -168,7 +167,7 @@ public class CustomerController {
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
             if (Objects.isNull(customerRepository.findFirstByEmail(user.getEmail()))) {
-                customerRepository.createUser(user.getEmail(), user.getPassword_hash(), user.getUser_type());
+                customerRepository.createUser(user.getEmail(), user.getName(), user.getPassword_hash(), user.getUser_type());
                 return new ResponseEntity<>(null, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
@@ -179,23 +178,29 @@ public class CustomerController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody UpdateUserRequest request) {
+    public ResponseEntity<User> updateUser(@RequestBody User request) {
         try {
 
-            User u = userRepository.findFirstByEmail(request.getEmailBefore());
+            User u = userRepository.findFirstByEmail(request.getEmail());
 
             if (Objects.isNull(u)) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            } else if (!Objects.isNull(customerRepository.findFirstByEmail(request.getEmailAfter()))) {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-            } else {
-                if (!Objects.isNull(request.getEmailAfter()) && !request.getEmailAfter().equals("")) {
-                    u.setEmail(request.getEmailAfter());
+            }
+            // else if (!Objects.isNull(customerRepository.findFirstByEmail(request.getEmailAfter()))) {
+            //     return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            // } 
+            else {
+                if (!Objects.isNull(request.getEmail()) && !request.getEmail().equals("") && !u.getEmail().equals(request.getEmail()) ) {
+                    u.setEmail(request.getEmail());
                 }
-                if (!Objects.isNull(request.getPassword_hash()) && !request.getPassword_hash().equals("")) {
+                if (!Objects.isNull(request.getName()) && !request.getName().equals("") && !u.getName().equals(request.getName())) {
+                    u.setName(request.getName());
+                }
+                if (!Objects.isNull(request.getPassword_hash()) && !request.getPassword_hash().equals("") && !u.getPassword_hash().equals(request.getPassword_hash())) {
                     u.setPassword_hash(request.getPassword_hash());
                 }
-                if (!Objects.isNull(request.getUser_type())) {
+                
+                if (!Objects.isNull(request.getUser_type()) && (u.getUser_type() != request.getUser_type())) {
                     u.setUser_type(request.getUser_type());
                     userRepository.deleteByEmail(u.getEmail());
                 }

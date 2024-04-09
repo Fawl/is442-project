@@ -13,6 +13,7 @@ CREATE TABLE "tags" (
 CREATE TABLE "user_table" (
   "id" serial PRIMARY KEY,
   "email" varchar(255) UNIQUE NOT NULL,
+  "name" varchar(255) NOT NULL,
   "password_hash" varchar(32) NOT NULL,
   "user_type" usertype NOT NULL,
   "balance" float DEFAULT 1000

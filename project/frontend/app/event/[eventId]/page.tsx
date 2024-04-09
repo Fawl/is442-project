@@ -22,7 +22,6 @@ export default async function SpecificEventPage({
 
   const eventId = params.eventId;
   const event = await getEventById(eventId);
-
   const utcStart = new Date(event.start);
   const utcEnd = new Date(event.end);
   // Add 8 hours to convert UTC to Singapore Time (SGT)
@@ -118,7 +117,7 @@ export default async function SpecificEventPage({
                 <>
                   {userRole == "customer" && (
                     <PurchaseTicketModal
-                      eventId={eventId}
+                      event={event}
                       userId={session?.user?.id!}
                       action={
                         <Button

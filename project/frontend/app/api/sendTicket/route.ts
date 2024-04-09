@@ -15,7 +15,8 @@ interface Ticket {
 }
 
 interface RequestBody {
-  recipientEmail: string;
+  user: any;
+  event:any
   subject: string;
   ticket: Ticket[];
 }
@@ -23,8 +24,8 @@ interface RequestBody {
 export async function POST(request: { json: () => Promise<RequestBody> }) {
   
   try {
-    const { recipientEmail, subject, ticket } = await request.json();
-    if (!recipientEmail || !subject) {
+    const { user,event, subject, ticket } = await request.json();
+    if (!user || !subject) {
       return NextResponse.json(
         { message: "Recipient email and subject are required" },
         { status: 400 }
@@ -43,12 +44,12 @@ export async function POST(request: { json: () => Promise<RequestBody> }) {
     });
 
     const emailHtml = render(
-      SampleEmail({ url: "https://example.com", ticket: ticket })
+      SampleEmail({ user:user,event:event, ticket: ticket })
     );
 
     const mailOptions = {
       from: "ticketeer101@gmail.com",
-      to: recipientEmail,
+      to: user.email,
       subject: subject,
       html: emailHtml,
     };

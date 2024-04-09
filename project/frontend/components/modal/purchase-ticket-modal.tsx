@@ -13,14 +13,16 @@ import { Input } from "../ui/input";
 import { MinusCircle, PlusCircleIcon } from "lucide-react";
 import { purchaseTicketByEventIdANDUserId } from "@/lib/api/ticket";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+
 
 
 export default function PurchaseTicketModal({
-  eventId,
+  event,
   userId,
   action,
 }: {
-  eventId: string;
+  event: any;
   userId: string;
   action: React.ReactNode;
 }) {
@@ -28,10 +30,12 @@ export default function PurchaseTicketModal({
   const [ticketQuantity, setTicketQuantity] = useState(1);
   const [error, setError] = useState("");
   const maxTickets = 5;
+  const { data: session } = useSession();
+  const user = session?.user!;
 
   const handleQuantityChange = (amount: number) => {
     const newQuantity = ticketQuantity + amount;
-
+    
     if (newQuantity >= 1 && newQuantity <= maxTickets) {
       setTicketQuantity(newQuantity);
       setError(""); // Clear the error message if the quantity is within the allowed range
@@ -46,15 +50,36 @@ export default function PurchaseTicketModal({
   };
 
   const handleCheckout = async () => {
-    const payload = { eventId, userId, ticketQuantity };
+    const payload = { eventId:event.id, userId, ticketQuantity };
     try {
-      const response = await purchaseTicketByEventIdANDUserId(payload);
-      if (response != null) {
+      const ticket = await purchaseTicketByEventIdANDUserId(payload);
+      if (ticket != null) {
         toast.success("Ticket purchased successfully");
         setOpen(false);
+        const sendTicket = await fetch(
+          process.env.NEXT_PUBLIC_FRONTEND + `/api/sendTicket`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user: user,
+              event:event,
+              subject: "Ticket Purchase for" + event.title,
+              ticket: ticket,
+            }),
+          }
+        );
       }
-    } catch (error) {
-      toast.error("Failed to purchase ticket")
+    } catch (error:any) {
+      if(error.message.includes('409')){
+        toast.error("Insufficient Balance");
+      }else{
+        toast.error("Failed to purchase ticket")
+      }
+      
+      
     }
   };
 

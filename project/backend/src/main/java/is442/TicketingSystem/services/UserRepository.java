@@ -35,8 +35,8 @@ public interface UserRepository< T extends User > extends JpaRepository<T, Long>
 	// https://stackoverflow.com/questions/44460394/can-i-use-enum-parameter-into-jparepository-nativequery
 	@Transactional
 	@Modifying
-	@Query(value = "INSERT INTO \"user_table\" (email, password_hash, user_type)" +
-				"VALUES (:email, :password_hash, CAST(:#{#user_type?.name()} as usertype) )" 
+	@Query(value = "INSERT INTO \"user_table\" (email, name, password_hash, user_type)" +
+				"VALUES (:email, :name, :password_hash, CAST(:#{#user_type?.name()} as usertype) )" 
 				, nativeQuery = true)
-	void createUser(@Param("email") String email, @Param("password_hash") String password_hash, @Param("user_type") UserType userType);
+	void createUser(@Param("email") String email, @Param("name") String name, @Param("password_hash") String password_hash, @Param("user_type") UserType userType);
 }
