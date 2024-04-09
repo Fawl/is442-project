@@ -28,6 +28,7 @@ public class EventManagerController extends EventController {
 	private EventManagerRepository eventManagerRepository;
 	@Autowired
 	private CustomerRepository customerRepository;
+	@Autowired TicketOfficerRepository ticketOfficerRepository;
 
 	@Transactional
 	@DeleteMapping("/cancel")
@@ -125,6 +126,15 @@ public class EventManagerController extends EventController {
 	public ResponseEntity<List<Event>> getEvents(@RequestParam int emid){
 		EventManager em = eventManagerRepository.findById(emid);
 		return new ResponseEntity<>(em.getEvents(), HttpStatus.OK);
+	}
+
+	@GetMapping("officers")
+	public ResponseEntity<List<TicketOfficer>> getOfficersByManager(@RequestParam Long emid){
+		List<TicketOfficer> tolist = ticketOfficerRepository.findTicketOfficersByEventManager(emid);
+		if (Objects.isNull(tolist)){
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND); 
+		}
+		return new ResponseEntity<List<TicketOfficer>>(tolist, HttpStatus.OK);
 	}
 }
 

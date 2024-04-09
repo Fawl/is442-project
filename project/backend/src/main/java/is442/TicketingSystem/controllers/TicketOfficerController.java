@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/ticket")
-public class TicketOfficer extends EventController {
+public class TicketOfficerController extends EventController {
 
 	@Autowired
 	private TicketRepository ticketRepository;
