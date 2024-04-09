@@ -10,21 +10,11 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.core.io.Resource;
-import org.springframework.boot.json.JsonParser;
-
 public class utils {
-    @Autowired
-    private static ResourcePatternResolver resourceResolver;
     private static Random rand = new Random();
     private static Gson gson = new Gson();
 
@@ -73,28 +63,4 @@ public class utils {
         return ls.get(randomIndex);
     }
 
-
-    public static String getRandomImageFAILED() {
-        try {
-            System.out.println("Getting all resources");
-            Resource[] unsplashJsons = resourceResolver.getResources("classpath:unsplashImages/*.json");
-            System.out.println("Got all resources");
-            int idx = rand.nextInt(unsplashJsons.length);
-            try (Reader reader = new InputStreamReader(unsplashJsons[idx].getInputStream())) {
-                System.out.printf("Getting resource idx %d", idx);
-                JsonParser springParser = JsonParserFactory.getJsonParser();
-                Map<String, Object> jsonList = springParser.parseMap(FileCopyUtils.copyToString(reader));
-                System.out.println(jsonList);
-                idx = rand.nextInt(jsonList.size());
-                Map<String, Object> json = (Map<String, Object>) jsonList.get(idx);
-                Map<String, String> images = (Map<String, String>) json.get("urls");
-                return images.get("regular");
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
 }
