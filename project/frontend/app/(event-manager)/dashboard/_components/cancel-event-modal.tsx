@@ -10,7 +10,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { cancelEventById } from "@/lib/api/event";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function CancelEventModal({
   eventId,
@@ -23,9 +26,15 @@ export function CancelEventModal({
   className: string;
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
+
   const handleCancelEvent = async () => {
-    alert("Event cancelled");
+    const response = await cancelEventById({ id: eventId });
+    if (response !== null) {
+      toast.success("Event has been cancelled and tickets refunded.");
+      router.refresh();
+    }
   };
 
   return (

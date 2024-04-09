@@ -62,24 +62,7 @@ export default async function SpecificEventPage({
               <div className="text-sm text-muted-foreground/80">
                 About Event
               </div>
-              <CustomDescription
-                minRow={4}
-                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. In arcu cursus
-        euismod quis. Eu mi bibendum neque egestas congue quisque. In dictum non
-        consectetur a. Fermentum leo vel orci porta. Aenean sed adipiscing diam
-        donec adipiscing tristique risus nec. At imperdiet dui accumsan sit amet
-        nulla facilisi morbi tempus. Odio aenean sed adipiscing diam donec
-        adipiscing tristique risus. In dictum non consectetur a erat nam. Eget
-        egestas purus viverra accumsan in nisl nisi scelerisque eu. Id cursus
-        metus aliquam eleifend mi in nulla posuere sollicitudin. Cras tincidunt
-        lobortis feugiat vivamus. Facilisis volutpat est velit egestas dui id
-        ornare arcu odio. Suspendisse sed nisi lacus sed viverra tellus in hac.
-        Augue neque gravida in fermentum et sollicitudin ac orci phasellus.
-        Pellentesque massa placerat duis ultricies lacus sed turpis tincidunt.
-        Iaculis at erat pellentesque adipiscing. Blandit libero volutpat sed
-        cras ornare arcu dui vivamus arcu."
-              />
+              <CustomDescription minRow={4} text={event.description} />
             </div>
           </div>
         </section>

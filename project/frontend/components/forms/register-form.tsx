@@ -30,6 +30,7 @@ export default function RegisterForm({
   const form = useForm<z.infer<typeof RegisterFormSchema>>({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -38,6 +39,7 @@ export default function RegisterForm({
   const handleOnSubmit = async (data: any) => {
     try {
       const response = await createUser({
+        name: data.name,
         email: data.email,
         password_hash: data.password,
         user_type: userType,
@@ -64,6 +66,25 @@ export default function RegisterForm({
     <Form {...form}>
       <form className="space-y-6" onSubmit={form.handleSubmit(handleOnSubmit)}>
         <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="space-y-0">
+                <FormLabel className="text-gray-800">Name</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="Name"
+                    className="focus-visible:ring-1 focus-visible:ring-offset-0"
+                  />
+                </FormControl>
+                <FormMessage className="font-normal" />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="email"

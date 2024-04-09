@@ -1,4 +1,4 @@
-import CreateEventForm from "@/components/forms/create-event-form";
+import CreateEventForm from "@/app/(event-manager)/create/_components/create-event-form";
 
 export default function CreatePage() {
   return (

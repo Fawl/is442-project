@@ -15,8 +15,8 @@ import {
 
 import { MoreHorizontalIcon } from "lucide-react";
 import Link from "next/link";
-import { CancelEventModal } from "../modal/cancel-event-modal";
-import { Button } from "../ui/button";
+import { CancelEventModal } from "./cancel-event-modal";
+import { Button } from "../../../../components/ui/button";
 import { addHours, format } from "date-fns";
 
 export default function AdminEventTable(eventsData: any) {

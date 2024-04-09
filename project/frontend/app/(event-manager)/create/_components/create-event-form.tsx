@@ -12,8 +12,8 @@ import { CalendarIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
+import { Button } from "../../../../components/ui/button";
+import { Calendar } from "../../../../components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -21,10 +21,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Textarea } from "../ui/textarea";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../../components/ui/popover";
+import { Textarea } from "../../../../components/ui/textarea";
 
 export default function CreateEventForm({
   intialValues,
@@ -42,11 +46,12 @@ export default function CreateEventForm({
     defaultValues: {
       title: (intialValues != null && intialValues.title) || "",
       venue: (intialValues != null && intialValues.venue) || "",
-      description: "",
+      description: (intialValues != null && intialValues.description) || "",
       price: (intialValues != null && intialValues.price) || 0,
       numTickets: (intialValues != null && intialValues.numTickets) || 0,
       cancellationFee:
         (intialValues != null && intialValues.cancellationFee) || 0,
+      startDate: (intialValues != null && intialValues.start) || "",
       startTime:
         (intialValues != null &&
           convertISOToSingaporeTime(intialValues.startTime)) ||
@@ -77,8 +82,10 @@ export default function CreateEventForm({
 
     // FORMAT DATA
     const payload = {
+      imageLink: intialValues?.imageLink,
       title: values.title,
       venue: values.venue,
+      description: values.description,
       start: combinedStartDateTime.toISOString(),
       end: combinedEndDateTime.toISOString(),
       price: values.price,
@@ -86,6 +93,7 @@ export default function CreateEventForm({
       cancellationFee: values.cancellationFee,
       user_id: session?.user?.id,
     };
+    console.log(payload);
 
     if (type === "create") {
       handleCreateEvent(payload);
@@ -308,7 +316,6 @@ export default function CreateEventForm({
                     selected={field.value}
                     onSelect={(e) => {
                       field.onChange(e);
-                      console.log(e);
                       form.setValue("endDate", form.getValues("startDate")); // Set end date to start date
                       setIsCalendarOpen(false);
                     }}

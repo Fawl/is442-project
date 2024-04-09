@@ -2,12 +2,11 @@ import { authConfig } from "@/auth";
 import { DEFAULT_ROUTES } from "@/lib/routes";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { Button, buttonVariants } from "../ui/button";
+import { buttonVariants } from "../ui/button";
 import NavItems from "./navItems";
 import UserAvatar from "./userAvatar";
 
 import { Fjalla_One } from "next/font/google";
-import SearchModal from "../modal/search-modal";
 const fjalla = Fjalla_One({
   subsets: ["latin"],
   display: "swap",
@@ -32,16 +31,6 @@ export default async function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <SearchModal
-          action={
-            <Button
-              variant="outline"
-              className="h-[32px] w-[200px] hidden md:flex justify-start text-muted-foreground font-normal"
-            >
-              Search event...
-            </Button>
-          }
-        />
         {session !== null ? (
           <UserAvatar userServerSession={session} />
         ) : (
