@@ -35,7 +35,9 @@ export function BookTicketDialog({
     email: z.string().email({
       message: "Required",
     }),
-  });
+    
+    })
+
   const router = useRouter();
 
   const [ticketQuantity, setTicketQuantity] = React.useState(1);
@@ -62,12 +64,14 @@ export function BookTicketDialog({
   const handleIssueTicket = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const email = event.currentTarget.email.value;
-
+    
     let userAccount = null;
     try {
       const validatedData = CreateUserSchema.parse({
         email: email,
+        
       });
+      
       const issue = await issueTicketByTicketOfficer({
         eventId,
         email,
@@ -75,13 +79,28 @@ export function BookTicketDialog({
       });
 
       if (issue) {
+        console.log(issue)
         toast.success("Successfully issued Ticket");
+        const sendTicket = await fetch(
+          process.env.NEXT_PUBLIC_FRONTEND + `/api/sendTicket`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(issue),
+          }
+        );
       }
-    } catch (error) {
-      setEmailError(true);
-      toast.error("Invalid Email Input");
+    } catch (error:any) {
+      if (error.errors?.find((error:any) => error.path[0] === "email")) {
+        setEmailError(true);
+        
+      } 
+     
     }
-  };
+    }
+  
 
   return (
     <Dialog open={open} onOpenChange={setIsOpen}>
@@ -99,6 +118,7 @@ export function BookTicketDialog({
             <div className="space-y-2 flex items-center flex-col">
               <div className="flex gap-2 w-full">
                 <Button
+                type="button"
                   variant="secondary"
                   onClick={() => handleQuantityChange(-1)}
                   disabled={ticketQuantity === 1}
@@ -110,6 +130,7 @@ export function BookTicketDialog({
                   value={ticketQuantity}
                 />
                 <Button
+                type="button"
                   variant="secondary"
                   onClick={() => handleQuantityChange(1)}
                 >
@@ -118,16 +139,20 @@ export function BookTicketDialog({
               </div>
               <div className="text-sm text-red-500">{error}</div>
             </div>
-            <Label htmlFor="email">Customer Email</Label>
-            <Input
-              type="text"
-              id="email"
-              placeholder="Customer Email"
-              className={cn(
-                "h-11 focus-visible:ring-0 focus-visible:ring-offset-0",
-                emailError && "border-red-300 bg-red-50"
-              )}
-            />
+            
+            <div>
+              <Label htmlFor="email">Customer Email</Label>
+              <Input
+                type="text"
+                id="email"
+                placeholder="Customer Email"
+                className={cn(
+                  "h-11 focus-visible:ring-0 focus-visible:ring-offset-0",
+                  emailError && "border-red-300 bg-red-50"
+                )}
+              />
+            </div>
+            
           </div>
           <Button type="submit">Issue Ticket</Button>
         </form>

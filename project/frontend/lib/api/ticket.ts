@@ -88,6 +88,7 @@ export async function issueTicketByTicketOfficer(payload: any) {
   // USER DON'T EXIST
   if (user.status === 404) {
     const newUser = await createUser({
+      name: "",
       email: email,
       password_hash: "password",
       user_type: "customer",
@@ -111,24 +112,17 @@ export async function issueTicketByTicketOfficer(payload: any) {
     );
 
     const event = await getEventById(eventId);
-    if (ticket) {
-      const sendTicket = await fetch(
-        process.env.NEXT_PUBLIC_FRONTEND + `/api/sendTicket`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user: customer,
-            subject: "Ticket Purchase for" + event.title,
-            ticket: ticket,
-          }),
-        }
-      );
-      return ticket;
+    const ticketData = await ticket.json();
+    if (ticketData) {
+      return {
+        user: customer,
+        event:event,
+        subject: "Ticket Purchase for" + event.title,
+        ticket: ticketData,
+      };
     }
   } catch (error) {
     toast.error("Failed to issue ticket");
+    throw new Error("Error issuing ticket")
   }
 }

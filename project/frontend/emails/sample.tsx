@@ -17,7 +17,7 @@ import { MapIcon, MapPinIcon, TicketIcon } from "lucide-react";
 
 export default function SampleEmail(props: any) {
   const { user,ticket,event } = props;
-  console.log(event)
+  console.log(props)
   const startTime = new Date(event.startTime);
   const endTime = new Date(event.endTime)
   const dayOfMonth = startTime.getDate();

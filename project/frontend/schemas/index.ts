@@ -29,3 +29,11 @@ export const CreateEventSchema = z.object({
   // imageLink: z.string(), // AUTO-GENERATED
   // createdBy: z.string(), // REQUIRED
 });
+
+export const IssueTicketSchema = z.object({
+  name: z.string().min(1,{
+    message: "Required",
+  }),
+  email: z.string().email(),
+  ticketQuantity: z.coerce.number().gte(1, "Must be 1 or more"),
+})
