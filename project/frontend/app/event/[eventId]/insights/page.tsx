@@ -1,5 +1,6 @@
 import { getEventCustomerById } from "@/lib/api/event";
 import InsightSummaryCard from "./_components/insight-summary-card";
+import { LineChartHero } from "./_components/graph";
 
 export default async function SpecificEventInsightsPage({
   params,
@@ -9,9 +10,11 @@ export default async function SpecificEventInsightsPage({
   const eventId = params.eventId;
   const ticketsPurchased = await getEventCustomerById(eventId);
 
+  let totalRevenue = 0;
   let ticketRedeemed = 0;
   let ticketRefunded = 0;
   for (const ticket of ticketsPurchased) {
+    totalRevenue += ticket.price;
     if (ticket.redeemed == true) {
       ticketRedeemed++;
     }
@@ -20,12 +23,78 @@ export default async function SpecificEventInsightsPage({
     }
   }
 
+  // Initialize an object to store aggregated data
+  const aggregatedData = {};
+
+  // Loop through ticketsPurchased to aggregate data
+  ticketsPurchased.forEach((ticket: any) => {
+    const purchaseDate = new Date(ticket.purchaseTime);
+    const monthYear = purchaseDate.toLocaleString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
+
+    // If the month doesn't exist in aggregatedData, initialize it
+    // @ts-ignore
+    if (!aggregatedData[monthYear]) {
+      // @ts-ignore
+      aggregatedData[monthYear] = {
+        "Ticket Purchased": 0,
+        Revenue: 0,
+      };
+    }
+
+    // Increment ticket count and revenue for the corresponding month
+    // @ts-ignore
+    aggregatedData[monthYear]["Ticket Purchased"]++;
+    // @ts-ignore
+    aggregatedData[monthYear].Revenue += ticket.price;
+  });
+
+  // Get current date
+  const currentDate = new Date();
+
+  // Generate end date (current month)
+  const endDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0
+  ); // Last day of the current month
+
+  // Generate start date (12 months ago from end date)
+  const startDate = new Date(endDate);
+  startDate.setMonth(startDate.getMonth() - 11); // Subtract 11 to get 12 months
+
+  // Generate months from start date to end date
+  const monthsInRange = [];
+  for (let d = startDate; d <= endDate; d.setMonth(d.getMonth() + 1)) {
+    monthsInRange.push(
+      d.toLocaleString("en-US", { month: "short", year: "numeric" })
+    );
+  }
+
+  // Merge aggregatedData with all months in range
+  const chartdata: any[] = monthsInRange.map((monthYear) => ({
+    date: monthYear,
+    // @ts-ignore
+    "Ticket Purchased": aggregatedData[monthYear]
+      ? // @ts-ignore
+        aggregatedData[monthYear]["Ticket Purchased"]
+      : 0,
+    // @ts-ignore
+    Revenue: aggregatedData[monthYear] ? aggregatedData[monthYear].Revenue : 0,
+  }));
+
   return (
     <div className="w-full">
-      <div className="flex w-full gap-2">
+      <div className="flex w-full gap-3">
         <InsightSummaryCard
           title="Total Ticket Purchased"
           value={ticketsPurchased.length}
+        />
+        <InsightSummaryCard
+          title="Total Revenue"
+          value={`$${totalRevenue.toFixed(2).toString()}`}
         />
         <InsightSummaryCard
           title="Total Ticket Redeemed"
@@ -35,6 +104,10 @@ export default async function SpecificEventInsightsPage({
           title="Total Ticket Refunded"
           value={ticketRefunded.toString()}
         />
+      </div>
+
+      <div className="mt-8">
+        <LineChartHero data={chartdata} />
       </div>
     </div>
   );
