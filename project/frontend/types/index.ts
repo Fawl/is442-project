@@ -28,6 +28,7 @@ export type Event = {
 };
 
 export type User = {
+  name: string;
   email: string;
   password_hash: string;
   user_type: string;

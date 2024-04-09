@@ -1,5 +1,6 @@
 "use client";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -9,6 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { getUserById } from "@/lib/api/user";
+import { useEffect, useState } from "react";
+
+const getUserData = async (userId: string) => {
+  const data = await getUserById(userId);
+  return data;
+};
 
 export default function UserAvatar({
   userServerSession,
@@ -17,6 +25,17 @@ export default function UserAvatar({
 }) {
   const session = userServerSession || useSession();
   const userRole = session.user?.role;
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (session.user?.id) {
+        const res = await getUserData(session.user?.id);
+        setUserData(res);
+      }
+    };
+    fetchData();
+  }, [session.user?.id]);
 
   return (
     <DropdownMenu>
@@ -35,8 +54,15 @@ export default function UserAvatar({
         <DropdownMenuSeparator />
         {userRole === "customer" && (
           <>
-            <DropdownMenuItem>Tickets</DropdownMenuItem>
-            <DropdownMenuItem>Credits</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href="/tickets" className="w-full">
+                Tickets
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              {/* @ts-ignore */}
+              Credit: ${userData.balance} left
+            </DropdownMenuItem>
           </>
         )}
         <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>

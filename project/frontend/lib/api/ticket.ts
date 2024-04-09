@@ -18,37 +18,32 @@ export async function purchaseTicketByEventIdANDUserId(payload: any) {
       }
     );
     if (!response.ok) {
-      
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    //ADD GET USER BY ID
-    
     return response.json();
   } catch (error) {
     throw error;
   }
 }
 
-export async function getTicketsByUserId(userId:any){
-  
-  
+export async function getTicketsByUserId(userId: any) {
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND+
-      `/customer/tickets?user_id=${userId}`,
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + `/user/tickets?user_id=${userId}`,
       {
         method: "GET",
         headers: {
-          "Content-Type":"application/json"
-        }
+          "Content-Type": "application/json",
+        },
       }
-      )
-      if(!response.ok){
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-      return response.json()
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
   } catch (error) {
-    console.error("Error fetching ticket purchase:",error )
-    throw error
+    console.error("Error fetching ticket purchase:", error);
+    throw error;
   }
 }
 
@@ -78,7 +73,7 @@ export async function getTicketPurchaseByEventIdANDUserId(payload: any) {
 
 export async function issueTicketByTicketOfficer(payload: any) {
   const { eventId, email, ticketQuantity } = payload;
-  
+
   // GET USER BY EMAIL
   const user = await fetch(
     process.env.NEXT_PUBLIC_BACKEND + `/user/find?email=${email}`,
@@ -97,11 +92,10 @@ export async function issueTicketByTicketOfficer(payload: any) {
       password_hash: "password",
       user_type: "customer",
     });
-    
   }
-  
+
   const customer = await getUserByEmail(email);
-  
+
   const userId = customer.id;
   try {
     const ticket = await fetch(
@@ -116,20 +110,22 @@ export async function issueTicketByTicketOfficer(payload: any) {
       }
     );
 
-    const event = await getEventById(eventId)
+    const event = await getEventById(eventId);
     if (ticket) {
-      const sendTicket = await fetch(process.env.NEXT_PUBLIC_FRONTEND + `/api/sendTicket`,
-      {method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body:JSON.stringify({
-        user:customer,
-        subject:"Ticket Purchase for" + event.title,
-        ticket:ticket,
-      })
-    }
-      )
+      const sendTicket = await fetch(
+        process.env.NEXT_PUBLIC_FRONTEND + `/api/sendTicket`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user: customer,
+            subject: "Ticket Purchase for" + event.title,
+            ticket: ticket,
+          }),
+        }
+      );
       return ticket;
     }
   } catch (error) {

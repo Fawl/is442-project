@@ -37,6 +37,25 @@ export async function getEventById(id: string) {
   }
 }
 
+export async function getEventCustomerById(id: any) {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + `/manager/event/tickets?event_id=${id}`,
+      {
+        method: "GET",
+        cache: "no-cache",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    throw error;
+  }
+}
+
 export async function createEvent(payload: any) {
   try {
     const response = await fetch(
@@ -93,7 +112,6 @@ export async function cancelEventById(payload: any) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
       }
     );
     if (!response.ok) {

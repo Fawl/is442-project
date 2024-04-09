@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -6,13 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MoreHorizontalIcon } from "lucide-react";
 
 export default function AdminTicketOfficerTable({ data }: { data: any }) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
@@ -21,9 +22,21 @@ export default function AdminTicketOfficerTable({ data }: { data: any }) {
         {data.map((user: any) => {
           return (
             <TableRow key={user.id}>
+              <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>
-                <MoreHorizontalIcon size={16} />
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="text-muted-foreground"
+                  >
+                    Reset Password
+                  </Button>
+                  <Button size="sm" variant="destructive">
+                    Delete
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           );

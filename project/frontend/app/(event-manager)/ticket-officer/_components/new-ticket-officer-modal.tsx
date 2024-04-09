@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import RegisterForm from "../forms/register-form";
+import RegisterForm from "../../../../components/forms/register-form";
 import { useState } from "react";
 
 export default function NewTicketOfficerModal({

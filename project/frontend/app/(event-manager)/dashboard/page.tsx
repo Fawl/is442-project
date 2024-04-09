@@ -1,5 +1,4 @@
-import InsightSummaryCard from "@/components/cards/insight-summary-card";
-import AdminEventTable from "@/components/table/adminEventTable";
+import AdminEventTable from "@/app/(event-manager)/dashboard/_components/adminEventTable";
 import { getAllEvents } from "@/lib/api/event";
 
 export default async function DashboardPage2() {
@@ -13,13 +12,13 @@ export default async function DashboardPage2() {
 
     return (
       <div>
-        <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="py-4 space-y-8">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <InsightSummaryCard title="Total Event" value={totalNoOfEvents} />
             <InsightSummaryCard title="Total Revenue" value="$45,231.89" />
             <InsightSummaryCard title="title" value="value" />
-          </div>
-
+          </div> */}{" "}
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <AdminEventTable eventsData={response} />
         </div>
       </div>
