@@ -44,7 +44,7 @@ export default async function CustomerTable({ eventId }: { eventId: string }) {
     <>
       <div className="flex items-center justify-between">
         <div className="text-xl font-semibold">Transactions</div>
-        <ExportCustomerTransaction data={result} />
+        <ExportCustomerTransaction eventId={eventId} />
       </div>
 
       <div className="border rounded-lg mt-4">
@@ -57,32 +57,38 @@ export default async function CustomerTable({ eventId }: { eventId: string }) {
               <TableHead>Amount</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>{CustomerTableRow(result)}</TableBody>
+          <TableBody>
+            {result.length > 0 ? (
+              <>
+                {result.map((item: any) => {
+                  const customer = item.customer;
+                  const tickets = item.ticketsPurchased;
+                  const totalAmount = tickets.reduce(
+                    (acc: number, ticket: any) => {
+                      return acc + ticket.price;
+                    },
+                    0
+                  );
+                  return (
+                    <TableRow key={customer.id}>
+                      <TableCell>{customer.name}</TableCell>
+                      <TableCell>{customer.email}</TableCell>
+                      <TableCell>{tickets.length}</TableCell>
+                      <TableCell>${totalAmount.toFixed(2)}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </>
+            ) : (
+              <TableRow>
+                <TableCell className="text-center" colSpan={4}>
+                  No data available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
-    </>
-  );
-}
-
-function CustomerTableRow(data: any) {
-  return (
-    <>
-      {data.map((item: any) => {
-        const customer = item.customer;
-        const tickets = item.ticketsPurchased;
-        const totalAmount = tickets.reduce((acc: number, ticket: any) => {
-          return acc + ticket.price;
-        }, 0);
-
-        return (
-          <TableRow key={customer.id}>
-            <TableCell>{customer.name}</TableCell>
-            <TableCell>{customer.email}</TableCell>
-            <TableCell>{tickets.length}</TableCell>
-            <TableCell>${totalAmount.toFixed(2)}</TableCell>
-          </TableRow>
-        );
-      })}
     </>
   );
 }

@@ -1,3 +1,5 @@
+"use client";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Sheet,
@@ -7,7 +9,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { cancelEventById } from "@/lib/api/event";
+import { cancelTicketByTicketId } from "@/lib/api/ticket";
+import { differenceInHours } from "date-fns";
+import { format } from "date-fns";
 import { useQRCode } from "next-qrcode";
+import { useRouter } from "next/navigation";
 
 export default function TicketInfoSheet({
   children,
@@ -16,7 +23,12 @@ export default function TicketInfoSheet({
   children: React.ReactNode;
   eventData: any;
 }) {
+  const router = useRouter();
   const { Canvas } = useQRCode();
+  const startDate = new Date(eventData.eventDetails.startDate);
+  const currentTime = new Date();
+  const startTime = new Date(startDate);
+  const hoursDifference = differenceInHours(startTime, currentTime);
 
   return (
     <Sheet>
@@ -34,10 +46,39 @@ export default function TicketInfoSheet({
 
         <div className="mt-6 space-y-3">
           {eventData.ticketPurchase.map((ticket: any, index: number) => {
-            console.log(ticket);
             return (
               <Card className="relative p-4" key={index}>
-                <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">
+                    Purchased on:{" "}
+                    {format(new Date(ticket.purchaseTime), "dd MMM yyyy")}
+                  </span>
+
+                  <div>
+                    {ticket.refunded === true && (
+                      <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                        Refunded
+                      </span>
+                    )}
+
+                    {ticket.refunded === false && (
+                      <>
+                        {ticket.redeemed === false && (
+                          <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                            Available
+                          </span>
+                        )}
+                        {ticket.redeemed === true && (
+                          <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                            Redeemed
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center justify-center w-full">
                   <Canvas
                     text={ticket.id.toString()}
                     options={{
@@ -47,19 +88,33 @@ export default function TicketInfoSheet({
                       width: 200,
                     }}
                   />
+                  <span className="text-sm text-muted-foreground">
+                    #{ticket.id}
+                  </span>
                 </div>
-                <div className="absolute top-4 right-2">
-                  {ticket.redeemed === false && (
-                    <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-                      Available
-                    </span>
-                  )}
-                  {ticket.redeemed === true && (
-                    <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-                      Redeemed
-                    </span>
-                  )}
-                </div>
+
+                {ticket.refunded === false && hoursDifference > 48 && (
+                  <Button
+                    size="sm"
+                    variant={"destructive"}
+                    className="w-full mt-3"
+                    onClick={async () => {
+                      await cancelTicketByTicketId(ticket.id);
+                      router.refresh();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                )}
+
+                {ticket.refunded === false && (
+                  <div
+                    className="p-4 text-sm text-muted-foreground rounded-lg bg-gray-50 mt-4"
+                    role="alert"
+                  >
+                    Event can only be cancelled 48 hours before the start time.
+                  </div>
+                )}
               </Card>
             );
           })}

@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -7,8 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { deleteUserByEmail } from "@/lib/api/user";
 
 export default function AdminTicketOfficerTable({ data }: { data: any }) {
+  const deleteUser = async (id: string) => {
+    const response = await deleteUserByEmail(id);
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -25,18 +31,13 @@ export default function AdminTicketOfficerTable({ data }: { data: any }) {
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="text-muted-foreground"
-                  >
-                    Reset Password
-                  </Button>
-                  <Button size="sm" variant="destructive">
-                    Delete
-                  </Button>
-                </div>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => deleteUser(user.email)}
+                >
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           );

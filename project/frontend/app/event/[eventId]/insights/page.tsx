@@ -1,7 +1,6 @@
 import { getEventCustomerById } from "@/lib/api/event";
-import InsightSummaryCard from "./_components/insight-summary-card";
-import { LineChartHero } from "./_components/graph";
 import CustomerTable from "./_components/customerTable";
+import Insights from "./_components/insights";
 
 export default async function SpecificEventInsightsPage({
   params,
@@ -88,33 +87,13 @@ export default async function SpecificEventInsightsPage({
 
   return (
     <div className="w-full">
-      <div className="flex w-full gap-3">
-        <InsightSummaryCard
-          title="Total Ticket Purchased"
-          value={ticketsPurchased.length}
-        />
-        <InsightSummaryCard
-          title="Total Revenue"
-          value={`$${totalRevenue.toFixed(2).toString()}`}
-        />
-        <InsightSummaryCard
-          title="Total Ticket Redeemed"
-          value={ticketRedeemed.toString()}
-        />
-        <InsightSummaryCard
-          title="Total Ticket Refunded"
-          value={ticketRefunded.toString()}
-        />
-      </div>
-
-      <div className="mt-8">
-        <div className="border rounded-lg p-4">
-          <div className="text-sm font-medium text-muted-foreground pt-1">
-            Transaction History Over the Past 12 Months
-          </div>
-          <LineChartHero data={chartdata} />
-        </div>
-      </div>
+      <Insights
+        ticketsPurchased={ticketsPurchased.length}
+        totalRevenue={totalRevenue}
+        ticketRedeemed={ticketRedeemed}
+        ticketRefunded={ticketRefunded}
+        chartdata={chartdata}
+      />
 
       <div className="mt-8">
         <CustomerTable eventId={eventId} />

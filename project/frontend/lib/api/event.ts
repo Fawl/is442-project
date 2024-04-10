@@ -37,6 +37,25 @@ export async function getEventById(id: string) {
   }
 }
 
+export async function getEventReportById(id: string) {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + `/event/report?id=${id}`,
+      {
+        method: "GET",
+        cache: "no-cache",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return await response.blob();
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    throw error;
+  }
+}
+
 export async function getEventCustomerById(id: any) {
   try {
     const response = await fetch(

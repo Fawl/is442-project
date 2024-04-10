@@ -46,7 +46,7 @@ export async function getUserByEmail(email: string) {
   }
 }
 
-export async function getUserById(id:any){
+export async function getUserById(id: any) {
   try {
     const response = await fetch(
       process.env.NEXT_PUBLIC_BACKEND + `/user/find?id=${id}`,
@@ -114,6 +114,30 @@ export async function createUserByEmail(email: string) {
     return response;
   } catch (error) {
     console.error("Error creating customer account:", error);
+    throw error;
+  }
+}
+
+export async function deleteUserByEmail(email: string) {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND + `/user/delete?email=${email}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.log(response);
+      throw new Error(`HTTP error! Status: ${response}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error fetching data:", error);
     throw error;
   }
 }

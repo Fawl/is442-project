@@ -1,54 +1,33 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import csvDownload from "json-to-csv-export";
+import { getEventReportById } from "@/lib/api/event";
 import { SaveIcon } from "lucide-react";
 
-let formattedData: any[] = [];
+export function ExportCustomerTransaction({ eventId }: { eventId: string }) {
+  const handleExport = async () => {
+    try {
+      const response = await getEventReportById(eventId);
 
-export function ExportCustomerTransaction(data: any) {
-  const rawData = data.data;
+      // Create a URL for the Blob
+      const url = URL.createObjectURL(response);
 
-  // Extract data from rawData and format it for CSV export
-  for (const item of rawData) {
-    const { name: customerName, email: customerEmail } = item.customer;
-    for (const ticket of item.ticketsPurchased) {
-      const {
-        redeemed: redeemedStatus,
-        purchaseTime: purchaseDate,
-        id: ticketId,
-        price: ticketPrice,
-      } = ticket;
+      // Create a temporary <a> element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
 
-      formattedData.push({
-        "Customer Name": customerName,
-        "Customer Email": customerEmail,
-        "Ticket Id": ticketId,
-        "Redeemed Status": redeemedStatus,
-        "Purchase Date": new Date(purchaseDate),
-        "Ticket Price": ticketPrice,
-      });
+      // Set the download attribute to specify the filename
+      link.download = "report.csv"; // Set the filename to whatever you want
+
+      // Append the link to the document body and click it programmatically
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up: remove the temporary link and revoke the URL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading report:", error);
     }
-  }
-
-  // Configuration for CSV export
-  const dataToConvert = {
-    data: formattedData,
-    filename: "ip_addresses_report",
-    delimiter: ",",
-    headers: [
-      "Customer Name",
-      "Customer Email",
-      "Ticket Id",
-      "Redeemed Status",
-      "Purchase Date",
-      "Ticket Price",
-    ],
-  };
-
-  // Function to handle export button click
-  const handleExport = () => {
-    csvDownload(dataToConvert);
-    formattedData = []; // Clear formattedData after export
   };
 
   return (

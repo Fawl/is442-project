@@ -39,7 +39,7 @@ export default async function SpecificEventPage({
   if (!event) {
     return <div>Event not found</div>;
   }
-
+  console.log(event);
   return (
     <>
       <div className="relative bg-muted aspect-[16:9] h-[240px] rounded-lg">

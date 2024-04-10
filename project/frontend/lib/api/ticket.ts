@@ -29,7 +29,7 @@ export async function purchaseTicketByEventIdANDUserId(payload: any) {
 export async function getTicketsByUserId(userId: any) {
   try {
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND + `/user/tickets?user_id=${userId}`,
+      process.env.NEXT_PUBLIC_BACKEND + `/ticket/user?user_id=${userId}`,
       {
         method: "GET",
         headers: {
@@ -116,13 +116,36 @@ export async function issueTicketByTicketOfficer(payload: any) {
     if (ticketData) {
       return {
         user: customer,
-        event:event,
+        event: event,
         subject: "Ticket Purchase for" + event.title,
         ticket: ticketData,
       };
     }
   } catch (error) {
     toast.error("Failed to issue ticket");
-    throw new Error("Error issuing ticket")
+    throw new Error("Error issuing ticket");
+  }
+}
+
+export async function cancelTicketByTicketId(ticketId: any) {
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND +
+        `/customer/ticket/cancel?ticket_id=${ticketId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-cache",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.log("Error cancelling ticket:", error);
+    throw error;
   }
 }
