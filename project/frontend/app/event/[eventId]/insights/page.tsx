@@ -1,6 +1,7 @@
 import { getEventCustomerById } from "@/lib/api/event";
 import InsightSummaryCard from "./_components/insight-summary-card";
 import { LineChartHero } from "./_components/graph";
+import CustomerTable from "./_components/customerTable";
 
 export default async function SpecificEventInsightsPage({
   params,
@@ -107,7 +108,16 @@ export default async function SpecificEventInsightsPage({
       </div>
 
       <div className="mt-8">
-        <LineChartHero data={chartdata} />
+        <div className="border rounded-lg p-4">
+          <div className="text-sm font-medium text-muted-foreground pt-1">
+            Transaction History Over the Past 12 Months
+          </div>
+          <LineChartHero data={chartdata} />
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <CustomerTable eventId={eventId} />
       </div>
     </div>
   );

@@ -25,30 +25,33 @@ export default function TicketTable({ userId }: { userId: string }) {
 
   useEffect(() => {
     async function fetchData() {
-      const purchasedTickets = await getTicketsByUserId(userId);
-      const formattedPuchasedTickets = purchasedTickets.reduce(
-        (acc: any, obj: any) => {
-          const eventId = obj.event;
-          const existingIndex = acc.findIndex(
-            (item: any) => item.eventDetails.id === eventId
-          );
+      try {
+        const purchasedTickets = await getTicketsByUserId(userId);
+        const formattedPuchasedTickets = purchasedTickets.reduce(
+          (acc: any, obj: any) => {
+            const eventId = obj.event;
+            const existingIndex = acc.findIndex(
+              (item: any) => item.eventDetails.id === eventId
+            );
 
-          if (existingIndex !== -1) {
-            acc[existingIndex].ticketPurchase.push(obj);
-          } else {
-            acc.push({
-              eventDetails: { id: eventId },
-              ticketPurchase: [obj],
-            });
-          }
+            if (existingIndex !== -1) {
+              acc[existingIndex].ticketPurchase.push(obj);
+            } else {
+              acc.push({
+                eventDetails: { id: eventId },
+                ticketPurchase: [obj],
+              });
+            }
 
-          return acc;
-        },
-        []
-      );
-
-      await updateEventDetails(formattedPuchasedTickets);
-      setFormattedPuchasedTickets(formattedPuchasedTickets);
+            return acc;
+          },
+          []
+        );
+        await updateEventDetails(formattedPuchasedTickets);
+        setFormattedPuchasedTickets(formattedPuchasedTickets);
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     fetchData();
@@ -66,6 +69,14 @@ export default function TicketTable({ userId }: { userId: string }) {
       </TableHeader>
 
       <TableBody>
+        {formattedPuchasedTickets.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={4} className="text-center capitalize">
+              No purchased tickets
+            </TableCell>
+          </TableRow>
+        )}
+
         {formattedPuchasedTickets.map((item: any, index: number) => {
           return (
             <TableRow key={index}>

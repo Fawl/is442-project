@@ -21,17 +21,6 @@ export default function EventAdminTabs({ eventId }: { eventId: string }) {
         </li>
         <li className="me-2">
           <Link
-            href={`/event/${eventId}/customers`}
-            className={`inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ${
-              pathname === `/event/${eventId}/customers` &&
-              "text-[#0977aa] font-medium border-[#0977aa]"
-            }`}
-          >
-            Customers
-          </Link>
-        </li>
-        <li className="me-2">
-          <Link
             href={`/event/${eventId}/insights`}
             className={`inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ${
               pathname === `/event/${eventId}/insights` &&
