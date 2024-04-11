@@ -61,6 +61,25 @@ export default function NavItems() {
           </li>
         </>
       )}
+
+      {userRole ==="ticket_officer" &&(
+        <>
+          <li>
+          <Link
+              href={DEFAULT_ROUTES.CHECK_TICKET}
+              className={`flex items-center text-sm text-muted-foreground hover:text-primary ${
+                pathname === DEFAULT_ROUTES.CHECK_TICKET &&
+                "text-primary font-medium"
+              }`}
+            >
+              <TicketIcon className="mr-1.5" size={16} />
+              <span>Check Ticket Validity</span>
+            </Link>
+          </li>
+        </>
+      )
+
+      }
     </ul>
   );
 }

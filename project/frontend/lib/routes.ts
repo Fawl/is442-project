@@ -8,4 +8,5 @@ export const DEFAULT_ROUTES = {
   DASHBOARD: "/dashboard",
   MY_EVENTS: "/my-events",
   MY_TICKETS: "/my-tickets",
+  CHECK_TICKET: "/check-ticket"
 };

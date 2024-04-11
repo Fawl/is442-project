@@ -149,3 +149,22 @@ export async function cancelTicketByTicketId(ticketId: any) {
     throw error;
   }
 }
+
+export async function checkValidity(ticketId:any){
+  try{
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND + `/ticket/verify?id=${ticketId}`)
+    return response.json();
+  }catch(error){
+    console.log("Error verifying ticket")
+    throw error;
+  }
+}
+export async function redeemValidity(ticketId:any){
+  try{
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND + `/ticket/verify?redeem=true&id=${ticketId}`)
+    return response.json();
+  }catch(error){
+    console.log("Error verifying ticket")
+    throw error;
+  }
+}

@@ -15,6 +15,7 @@ import { MapIcon, MapPinIcon, TicketIcon } from "lucide-react";
 
 
 
+
 export default function SampleEmail(props: any) {
   const { user,ticket,event } = props;
   console.log(props)
@@ -82,7 +83,7 @@ function formatTimeWithColon(dateString:any) {
             <div className="my-2 flex flex-row">
               <div className="rounded-lg w-8 h-8 p-2 bg-[#fcfafa] text-green-800 text-center flex justify-center">
                 <div className="mx-auto my-auto">
-                  <MapPinIcon />
+                <Img src={`/map-pin.png`} alt="Map Pin" />
                 </div>
               </div>
               <div className="my-auto mx-2">
