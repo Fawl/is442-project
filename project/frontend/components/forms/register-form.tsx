@@ -15,15 +15,17 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { createUser } from "@/lib/api/user";
+import { createTicketManager, createUser } from "@/lib/api/user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function RegisterForm({
   userType = "customer", // DEFAULT VALUE IF NOT PROVIDED
+  emId,
   isMangerSignUpCallback,
 }: {
   userType?: "customer" | "ticket_officer" | "event_manager";
+  emId?: string;
   isMangerSignUpCallback?: () => void;
 }) {
   const router = useRouter();
@@ -38,18 +40,31 @@ export default function RegisterForm({
 
   const handleOnSubmit = async (data: any) => {
     try {
-      const response = await createUser({
-        name: data.name,
-        email: data.email,
-        password_hash: data.password,
-        user_type: userType,
-      });
-      if (response.ok) {
-        toast.success("User created successfully");
-        if (userType === "customer") {
+      if (userType === "customer") {
+        const response = await createUser({
+          name: data.name,
+          email: data.email,
+          password_hash: data.password,
+          user_type: userType,
+        });
+
+        if (response.ok) {
+          toast.success("User created successfully");
           router.push("/login");
           router.refresh();
-        } else {
+        }
+      }
+
+      if (userType === "ticket_officer") {
+        const response = await createTicketManager({
+          name: data.name,
+          email: data.email,
+          password_hash: data.password,
+          user_type: userType,
+          emid: emId,
+        });
+        if (response.ok) {
+          toast.success("User created successfully");
           // IF USER TYPE IS TICKET OFFICER
           if (isMangerSignUpCallback) {
             isMangerSignUpCallback();
@@ -124,7 +139,7 @@ export default function RegisterForm({
           />
         </div>
 
-        <Button type="submit" className="w-full capitalize">
+        <Button type="submit" className="w-full">
           Create an account
         </Button>
       </form>

@@ -20,11 +20,14 @@ async function fetchAllEvents() {
         ))}
       >
         {sortedEvents.length > 0 &&
-          sortedEvents.map((event: any) => (
-            <Link href={`/event/${event.id}`} key={event.id}>
-              <EventCard event={event} />
-            </Link>
-          ))}
+          sortedEvents.map(
+            (event: any) =>
+              !event.cancelled && (
+                <Link href={`/event/${event.id}`} key={event.id}>
+                  <EventCard event={event} />
+                </Link>
+              )
+          )}
       </Suspense>
     );
   } catch (error) {

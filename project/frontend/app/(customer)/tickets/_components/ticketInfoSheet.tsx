@@ -9,12 +9,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { cancelEventById } from "@/lib/api/event";
 import { cancelTicketByTicketId } from "@/lib/api/ticket";
-import { differenceInHours } from "date-fns";
-import { format } from "date-fns";
+import { differenceInHours, format } from "date-fns";
 import { useQRCode } from "next-qrcode";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function TicketInfoSheet({
   children,
@@ -25,13 +24,14 @@ export default function TicketInfoSheet({
 }) {
   const router = useRouter();
   const { Canvas } = useQRCode();
-  const startDate = new Date(eventData.eventDetails.startDate);
+  const startDate = new Date(eventData.eventDetails.startTime);
   const currentTime = new Date();
   const startTime = new Date(startDate);
   const hoursDifference = differenceInHours(startTime, currentTime);
+  const [open, setOpen] = useState(false);
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>{children}</SheetTrigger>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
@@ -96,11 +96,22 @@ export default function TicketInfoSheet({
                 {ticket.refunded === false && hoursDifference > 48 && (
                   <Button
                     size="sm"
-                    variant={"destructive"}
+                    variant="destructive"
                     className="w-full mt-3"
                     onClick={async () => {
-                      await cancelTicketByTicketId(ticket.id);
-                      router.refresh();
+                      try {
+                        const response = await cancelTicketByTicketId(
+                          ticket.id
+                        );
+                        if (response) {
+                          router.refresh();
+                          setOpen(false);
+                        }
+                      } catch (error) {
+                        console.error("Error canceling ticket:", error);
+                        // Handle the error if necessary
+                        // For example, you could display an error message to the user
+                      }
                     }}
                   >
                     Cancel

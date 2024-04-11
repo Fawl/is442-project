@@ -2,8 +2,13 @@ import NewTicketOfficerModal from "@/app/(event-manager)/ticket-officer/_compone
 import AdminTicketOfficerTable from "@/app/(event-manager)/ticket-officer/_components/adminTicketOfficerTable";
 import { Button } from "@/components/ui/button";
 import { getAllUser } from "@/lib/api/user";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth";
 
 export default async function AddTicketOfficerPage() {
+  const session = await getServerSession(authConfig);
+  const userId = session?.user?.id;
+
   const userResponse = await getAllUser();
 
   const ticketOfficers = userResponse.filter(
@@ -16,7 +21,7 @@ export default async function AddTicketOfficerPage() {
         <h1 className="text-2xl font-semibold tracking-tight">
           Manage Ticket Officer
         </h1>
-        <NewTicketOfficerModal>
+        <NewTicketOfficerModal emId={userId!}>
           <Button className="font-normal" size="sm">
             New Ticker Officer
           </Button>

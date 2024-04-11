@@ -11,8 +11,10 @@ import RegisterForm from "../../../../components/forms/register-form";
 import { useState } from "react";
 
 export default function NewTicketOfficerModal({
+  emId,
   children,
 }: {
+  emId: string;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -34,6 +36,7 @@ export default function NewTicketOfficerModal({
         <RegisterForm
           userType="ticket_officer"
           isMangerSignUpCallback={handleCloseModal}
+          emId={emId}
         />
       </DialogContent>
     </Dialog>

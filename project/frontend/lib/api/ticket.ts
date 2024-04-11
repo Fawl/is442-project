@@ -1,6 +1,6 @@
 import { toast } from "sonner";
-import { createUser, getUserByEmail, getUserById } from "./user";
 import { getEventById } from "./event";
+import { createUser, getUserByEmail } from "./user";
 
 export async function purchaseTicketByEventIdANDUserId(payload: any) {
   const { eventId, userId, ticketQuantity } = payload;
@@ -32,6 +32,7 @@ export async function getTicketsByUserId(userId: any) {
       process.env.NEXT_PUBLIC_BACKEND + `/ticket/user?user_id=${userId}`,
       {
         method: "GET",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
         },
@@ -56,6 +57,7 @@ export async function getTicketPurchaseByEventIdANDUserId(payload: any) {
         `/customer/purchase?event_id=${eventId}&user_id=${userId}`,
       {
         method: "GET",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
         },
@@ -79,6 +81,7 @@ export async function issueTicketByTicketOfficer(payload: any) {
     process.env.NEXT_PUBLIC_BACKEND + `/user/find?email=${email}`,
     {
       method: "GET",
+      cache: "no-cache",
       headers: {
         "Content-Type": "application/json",
       },
@@ -134,16 +137,16 @@ export async function cancelTicketByTicketId(ticketId: any) {
         `/customer/ticket/cancel?ticket_id=${ticketId}`,
       {
         method: "DELETE",
+        cache: "no-cache",
         headers: {
           "Content-Type": "application/json",
         },
-        cache: "no-cache",
       }
     );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    return response.json();
+    return true;
   } catch (error) {
     console.log("Error cancelling ticket:", error);
     throw error;
