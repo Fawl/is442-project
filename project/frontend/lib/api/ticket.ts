@@ -90,7 +90,7 @@ export async function issueTicketByTicketOfficer(payload: any) {
     const newUser = await createUser({
       name: "",
       email: email,
-      password_hash: "password",
+      password_hash: "Password@888",
       user_type: "customer",
     });
   }

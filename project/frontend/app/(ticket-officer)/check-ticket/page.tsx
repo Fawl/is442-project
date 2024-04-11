@@ -40,8 +40,8 @@ export default function CheckTicket() {
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="space-y-1.5 w-1/2">
+    <div className="flex justify-center w-1/2">
+      <div className="space-y-1.5 ">
         <Label htmlFor="id">Verify Ticket ID</Label>
         <Input
           type="text"
