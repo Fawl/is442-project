@@ -16,7 +16,7 @@ export function ExportCustomerTransaction({ eventId }: { eventId: string }) {
       link.href = url;
 
       // Set the download attribute to specify the filename
-      link.download = "report.csv"; // Set the filename to whatever you want
+      link.download = "report_ev_" + eventId + ".xlsx"; // Set the filename to whatever you want
 
       // Append the link to the document body and click it programmatically
       document.body.appendChild(link);
